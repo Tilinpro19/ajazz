@@ -409,3 +409,11 @@ Sin hardware: leído del bundle público. Lo que contradice una observación con
 - **Efectos de luz:** los nombres en orden son Wave, Neon, Cycling Flash, YOYO Ball, Single Flash, Breathing Loop, Off.
   La web los asigna a los valores 1..6 y Off = 0, pero **con el mouse** se observó 0 = arcoíris y 6 = apagado,
   5 = respiración. La app usa el orden observado (0 = Wave ... 5 = Breathing Loop, 6 = Off); *a confirmar* el 1-4.
+
+## Dongle sin mouse (2026-10-23, `probe.js --raw` con el mouse dormido)
+
+- `online` responde `r[8] = 1`: el dongle está enchufado pero el mouse no está enlazado (apagado o dormido).
+  Valores vistos: `0` = cable, `1` = dongle sin mouse, `2` = dongle con mouse en línea.
+- En ese estado el dongle responde por su cuenta: `readConfig` con `r[4] = 0x2e`, DPI todo `FF` y la cola en `FF`;
+  `readButtons` todo `FF`; `version` trae el firmware del dongle (`r[20..22] = "273"`, `r[23..25] = "220"`).
+- La app no lee ni escribe la configuración hasta que `online` devuelve `2`.

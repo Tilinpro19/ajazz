@@ -1,13 +1,62 @@
 {
   "name": "ajazz-aj139-control",
+  "productName": "AJAZZ AJ139 Control",
   "version": "0.1.0",
+  "description": "Configuración del mouse AJAZZ AJ139 V2 MC sin la web del fabricante",
+  "author": "Thiago",
   "private": true,
   "type": "module",
+  "main": "electron/main.js",
   "scripts": {
     "test": "node --test test/*.test.js",
-    "probe": "node scripts/probe.js"
+    "probe": "node scripts/probe.js",
+    "dev": "node scripts/dev.js",
+    "build": "vite build",
+    "start": "vite build && electron .",
+    "icon": "node scripts/make-icon.js",
+    "dist": "vite build && electron-builder --win nsis portable"
   },
-  "dependencies": {
-    "node-hid": "^3.4.0"
+  "dependencies": {},
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
+    "node-hid": "^3.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^5.4.21"
+  },
+  "allowScripts": {
+    "electron@33.4.11": true,
+    "esbuild@0.21.5": true
+  },
+  "build": {
+    "appId": "com.thiago.ajazz-aj139-control",
+    "productName": "AJAZZ AJ139 Control",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**",
+      "electron/**",
+      "src/protocol.js",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "AJAZZ AJ139 Control"
+    },
+    "portable": {
+      "artifactName": "${productName} ${version} portable.exe"
+    }
   }
 }
