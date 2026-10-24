@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DeviceManager } from "../device/hid.js";
 import { Mouse, SUPPORTED_FIRMWARE } from "../device/mouse.js";
+import { DemoHid } from "../device/demo.js";
 import { validateConfig } from "../protocol.js";
 import {
   migrate, activeProfile, updateProfile, addProfile, removeProfile, newProfile, exportProfile,
@@ -11,6 +12,8 @@ import {
 } from "../profiles.js";
 import { api } from "./api.js";
 
+// #demo: mouse simulado; no se tocan los perfiles ni los respaldos reales.
+const DEMO = location.hash === "#demo";
 const BATTERY_POLL_MS = 60_000;
 const ONLINE_POLL_MS = 3_000;
 const clone = (v) => JSON.parse(JSON.stringify(v));
@@ -65,7 +68,7 @@ export function useController() {
   // ---- Perfiles: carga y guardado en disco ----
 
   useEffect(() => {
-    api.loadStore()
+    (DEMO ? Promise.resolve(null) : api.loadStore())
       .then((raw) => setStoreState(migrate(raw)))
       .catch((err) => {
         toast(`No se pudieron leer los perfiles: ${err.message}`, "error");
@@ -74,7 +77,7 @@ export function useController() {
   }, [toast]);
 
   useEffect(() => {
-    if (!store) return;
+    if (!store || DEMO) return;
     const t = setTimeout(() => api.saveStore(store).catch((err) => toast(`No se guardaron los perfiles: ${err.message}`, "error")), 300);
     return () => clearTimeout(t);
   }, [store, toast]);
@@ -100,7 +103,7 @@ export function useController() {
     setConfig(cfg);
     setButtons(btns.map((b) => b.action));
     syncActive({ config: cfg, buttons: btns.map((b) => b.action) });
-    api.ensureBackup({ date: new Date().toISOString(), mode: mouse.mode, firmware, config: cfg, buttons: btns.map((b) => b.bytes) })
+    if (!DEMO) api.ensureBackup({ date: new Date().toISOString(), mode: mouse.mode, firmware, config: cfg, buttons: btns.map((b) => b.bytes) })
       .then(setBackup)
       .catch(() => {});
     if (firmware !== SUPPORTED_FIRMWARE) toast(`Firmware ${firmware}: la app se probó con ${SUPPORTED_FIRMWARE}. Algunas opciones podrían no funcionar.`, "warn");
@@ -108,11 +111,12 @@ export function useController() {
   }, [syncActive, toast]);
 
   useEffect(() => {
-    if (!navigator.hid) {
+    const hid = DEMO ? new DemoHid() : navigator.hid;
+    if (!hid) {
       setConn({ status: "error", error: new Error("WebHID no está disponible en este entorno") });
       return;
     }
-    const mgr = new DeviceManager(navigator.hid);
+    const mgr = new DeviceManager(hid);
     managerRef.current = mgr;
     let offUnsolicited = null;
     const off = mgr.on("change", async (state) => {
@@ -125,9 +129,9 @@ export function useController() {
         setButtons(null);
         return;
       }
-      const mouse = new Mouse(state.transport, { mode: state.mode, name: state.device.productName });
+      const mouse = new Mouse(state.transport, { mode: state.mode });
       mouseRef.current = mouse;
-      setInfo({ mode: state.mode, name: state.device.productName || "AJ139 V2 MC", online: null });
+      setInfo({ mode: state.mode, name: DEMO ? "AJ139 V2 MC (demo)" : "AJ139 V2 MC", online: null });
       offUnsolicited = state.transport.on("unsolicited", (ev) => {
         if (ev.type === "battery") setInfo((i) => i && { ...i, battery: { level: ev.level, charging: ev.charging } });
         if (ev.type === "status") {

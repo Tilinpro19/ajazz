@@ -9,6 +9,7 @@
   "main": "electron/main.js",
   "scripts": {
     "test": "node --test test/*.test.js",
+    "test:ui": "vite build && electron scripts/e2e-demo.js",
     "probe": "node scripts/probe.js",
     "dev": "node scripts/dev.js",
     "build": "vite build",

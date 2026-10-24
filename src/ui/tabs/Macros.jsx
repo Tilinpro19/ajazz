@@ -124,7 +124,7 @@ export default function Macros({ ctl }) {
       actions={<>
         <span className={`usage ${used > MACRO_BYTES ? "over" : ""}`}>{Math.min(used, 9999)} / {MACRO_BYTES} bytes</span>
         <button className="btn primary" disabled={!ctl.macrosDirty || used > MACRO_BYTES || !ctl.config} onClick={ctl.writeMacros}>
-          {ctl.macrosDirty ? "Guardar en el mouse" : "Guardadas en el mouse"}
+          {ctl.macrosDirty ? "Guardar en el mouse" : "Sin cambios pendientes"}
         </button>
       </>}
     >

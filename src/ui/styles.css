@@ -169,7 +169,7 @@ p { margin: 0; }
 .light-card:hover { border-color: var(--muted); }
 .light-card.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
 .light-name { font-weight: 600; }
-.light-preview { height: 54px; border-radius: 8px; background: #000; }
+.light-preview { display: block; width: 100%; height: 54px; border-radius: 8px; background: #000; }
 .fx-0 { background: linear-gradient(90deg, #f33, #fb3, #3f6, #3cf, #93f, #f33); background-size: 300% 100%; animation: wave 4s linear infinite; }
 .fx-1 { animation: neon 6s steps(1) infinite; }
 .fx-2 { background: linear-gradient(90deg, #f33, #fb3, #3f6, #3cf, #93f, #f33); background-size: 300% 100%; animation: wave 1.6s linear infinite; }

@@ -61,7 +61,7 @@ function createWindow() {
     if (!(DEV_URL && url.startsWith(DEV_URL))) e.preventDefault();
   });
   if (DEV_URL) win.loadURL(DEV_URL);
-  else win.loadFile(path.join(here, "..", "dist", "index.html"));
+  else win.loadFile(path.join(here, "..", "dist", "index.html"), { hash: process.env.AJ_DEMO ? "demo" : "" });
   win.on("closed", () => (win = null));
 }
 
