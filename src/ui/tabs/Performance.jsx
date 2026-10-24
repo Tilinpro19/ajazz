@@ -12,13 +12,23 @@ function DpiLevel({ index, value, enabled, active, onSelect, onCommit }) {
   const [draft, setDraft] = useState(value);
   useEffect(() => setDraft(value), [value]);
 
+  const handleCardClick = () => {
+    if (!enabled) return;
+    if (!active) onSelect();
+  };
+
   return (
-    <div className={`dpi-level ${active ? "active" : ""} ${enabled ? "" : "disabled"}`} style={{ "--level": LEVEL_COLORS[index] }}>
-      <button className="dpi-select" disabled={!enabled} onClick={onSelect} title={enabled ? "Usar este nivel" : "Nivel desactivado"}>
+    <div
+      className={`dpi-level ${active ? "active" : ""} ${enabled ? "" : "disabled"}`}
+      style={{ "--level": LEVEL_COLORS[index] }}
+      onClick={handleCardClick}
+      title={enabled ? (active ? "Nivel actualmente activo" : "Haz clic en la tarjeta para activar este nivel") : "Nivel desactivado"}
+    >
+      <div className="dpi-select">
         <span className="dpi-dot" />
         <span>Nivel {index + 1}</span>
         {active && <span className="badge">Activo</span>}
-      </button>
+      </div>
       <div className="dpi-value">
         <NumberInput value={value} min={DPI_MIN} max={DPI_MAX} step={DPI_STEP} disabled={!enabled} onCommit={onCommit} />
         <span className="unit">DPI</span>

@@ -17,7 +17,10 @@
     "icon": "node scripts/make-icon.js",
     "dist": "vite build && electron-builder --win nsis portable"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@animateicons/react": "^0.12.1",
+    "motion": "^14.6.0"
+  },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.7.0",
     "electron": "^33.4.11",

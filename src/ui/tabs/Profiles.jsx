@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Section, Toggle, Field, PromptModal, ConfirmModal, Icon } from "../components.jsx";
+import { Section, Toggle, Field, PromptModal, ConfirmModal, Icon, ActionButton } from "../components.jsx";
+import { Plus, Copy } from "@animateicons/react/lucide";
 import { inElectron } from "../api.js";
 
 function Rules({ ctl }) {
@@ -52,9 +53,9 @@ function Rules({ ctl }) {
         <select className="select" value={profileId} onChange={(e) => setProfileId(e.target.value)}>
           {store.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
         </select>
-        <button className="btn ghost" disabled={!exe.trim()} onClick={() => add(exe)}>
-          <Icon name="plus" size={14} /> Agregar regla
-        </button>
+        <ActionButton icon={Plus} className="btn ghost" disabled={!exe.trim()} onClick={() => add(exe)}>
+          Agregar regla
+        </ActionButton>
         {foreground && (
           <button className="btn ghost" onClick={() => add(foreground)} title="Detectado en primer plano">
             Usar {foreground}
@@ -80,9 +81,9 @@ export default function Profiles({ ctl }) {
           <button className="btn ghost" onClick={ctl.importProfileFile}>
             Importar
           </button>
-          <button className="btn primary" onClick={() => setModal({ type: "new" })}>
-            <Icon name="plus" size={14} /> Nuevo perfil
-          </button>
+          <ActionButton icon={Plus} className="btn primary" onClick={() => setModal({ type: "new" })}>
+            Nuevo perfil
+          </ActionButton>
         </>}
       >
         <ul className="profile-list">
@@ -101,7 +102,7 @@ export default function Profiles({ ctl }) {
                     <button className="btn primary" disabled={!ctl.config && ctl.conn.status === "connected"} onClick={() => ctl.switchProfile(p.id)}>Usar</button>
                   )}
                   <button className="btn ghost" onClick={() => setModal({ type: "rename", profile: p })}>Renombrar</button>
-                  <button className="btn ghost" title="Duplicar este perfil" onClick={() => ctl.duplicateProfile(p.id)}>Duplicar</button>
+                  <ActionButton icon={Copy} className="btn ghost" title="Duplicar este perfil" onClick={() => ctl.duplicateProfile(p.id)}>Duplicar</ActionButton>
                   <button className="btn ghost" onClick={() => ctl.exportProfileFile(p.id)}>Exportar</button>
                   <button className="btn ghost danger-text" disabled={store.profiles.length === 1} onClick={() => setModal({ type: "delete", profile: p })}>Eliminar</button>
                 </div>

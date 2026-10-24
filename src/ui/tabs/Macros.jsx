@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Section, Segmented, NumberInput, PromptModal, ConfirmModal, Icon } from "../components.jsx";
+import { Section, Segmented, NumberInput, PromptModal, ConfirmModal, Icon, ActionButton } from "../components.jsx";
+import { Plus, CircleDot, CircleStop } from "@animateicons/react/lucide";
 import { keyFromEvent, keyLabel, mouseButtonFromEvent, mouseButtonLabel, MACRO_MOUSE_BUTTONS, KEYS } from "../../catalog.js";
 import { encodeMacros } from "../../protocol.js";
 
@@ -76,9 +77,9 @@ function Recorder({ delayMode, fixedDelay, onDone }) {
         <span className="hint">{events.length} eventos capturados</span>
         <div className="row">
           <button className="btn ghost" onClick={() => onDone(null)}>Cancelar</button>
-          <button className="btn primary" onClick={() => onDone(events)}>
-            <Icon name="stop" size={14} /> Terminar
-          </button>
+          <ActionButton icon={CircleStop} className="btn primary" onClick={() => onDone(events)}>
+            Terminar
+          </ActionButton>
         </div>
       </div>
     </div>
@@ -156,9 +157,9 @@ export default function Macros({ ctl }) {
     >
       <div className="macro-layout">
         <aside className="macro-list">
-          <button className="btn ghost full" disabled={macros.length >= 32} onClick={() => setModal("new")}>
-            <Icon name="plus" size={14} /> Nueva macro
-          </button>
+          <ActionButton icon={Plus} className="btn ghost full" disabled={macros.length >= 32} onClick={() => setModal("new")}>
+            Nueva macro
+          </ActionButton>
           <ul>
             {macros.map((m, i) => (
               <li key={m.id}>
@@ -191,9 +192,9 @@ export default function Macros({ ctl }) {
                   </div>
                 )}
                 {!recording && (
-                  <button className="btn record" onClick={() => setRecording(true)}>
-                    <Icon name="record" size={14} /> Grabar
-                  </button>
+                  <ActionButton icon={CircleDot} className="btn record" onClick={() => setRecording(true)}>
+                    Grabar
+                  </ActionButton>
                 )}
               </div>
 

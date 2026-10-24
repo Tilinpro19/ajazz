@@ -1,7 +1,17 @@
 import { useState } from "react";
 import { useController } from "./useController.js";
-import { Icon, Battery, Toasts } from "./components.jsx";
+import { Icon, Battery, Toasts, ActionButton } from "./components.jsx";
 import { inElectron } from "./api.js";
+import { useIconHover } from "@animateicons/react";
+import {
+  Gauge,
+  Mouse,
+  Keyboard,
+  Sparkles,
+  Settings as SettingsIcon,
+  Users,
+  RefreshCw,
+} from "@animateicons/react/lucide";
 import Performance from "./tabs/Performance.jsx";
 import Buttons from "./tabs/Buttons.jsx";
 import Macros from "./tabs/Macros.jsx";
@@ -10,13 +20,33 @@ import Settings from "./tabs/Settings.jsx";
 import Profiles from "./tabs/Profiles.jsx";
 
 const TABS = [
-  { id: "performance", label: "Rendimiento", icon: "gauge", view: Performance, needsMouse: true },
-  { id: "buttons", label: "Botones", icon: "mouse", view: Buttons, needsMouse: true },
-  { id: "macros", label: "Macros", icon: "macro", view: Macros, needsMouse: false },
-  { id: "lighting", label: "Iluminación", icon: "light", view: Lighting, needsMouse: true },
-  { id: "settings", label: "Ajustes", icon: "settings", view: Settings, needsMouse: true },
-  { id: "profiles", label: "Perfiles", icon: "profiles", view: Profiles, needsMouse: false },
+  { id: "performance", label: "Rendimiento", iconComponent: Gauge, view: Performance, needsMouse: true },
+  { id: "buttons", label: "Botones", iconComponent: Mouse, view: Buttons, needsMouse: true },
+  { id: "macros", label: "Macros", iconComponent: Keyboard, view: Macros, needsMouse: false },
+  { id: "lighting", label: "Iluminación", iconComponent: Sparkles, view: Lighting, needsMouse: true },
+  { id: "settings", label: "Ajustes", iconComponent: SettingsIcon, view: Settings, needsMouse: true },
+  { id: "profiles", label: "Perfiles", iconComponent: Users, view: Profiles, needsMouse: false },
 ];
+
+function NavTabButton({ tab, active, onSelect }) {
+  const { ref, triggerProps } = useIconHover({ trigger: "both" });
+  const IconComponent = tab.iconComponent;
+
+  return (
+    <button
+      type="button"
+      className={`nav ${active ? "active" : ""}`}
+      {...triggerProps}
+      onClick={(e) => {
+        triggerProps.onClick?.(e);
+        onSelect(e);
+      }}
+    >
+      <IconComponent ref={ref} size={18} />
+      <span>{tab.label}</span>
+    </button>
+  );
+}
 
 function Header({ ctl }) {
   const { conn, info, store } = ctl;
@@ -102,9 +132,9 @@ function Waiting({ ctl }) {
         <li>Cierra la web oficial y otras apps del mouse: solo una puede usarlo a la vez.</li>
         {!inElectron && <li>En el navegador hay que dar permiso con el botón de abajo.</li>}
       </ul>
-      <button className="btn primary" onClick={ctl.requestDevice}>
-        <Icon name="refresh" size={14} /> Buscar el mouse
-      </button>
+      <ActionButton icon={RefreshCw} className="btn primary" onClick={ctl.requestDevice}>
+        Buscar el mouse
+      </ActionButton>
     </div>
   );
 }
@@ -122,14 +152,12 @@ export default function App() {
       <div className="body">
         <nav className="sidebar">
           {TABS.map((t) => (
-            <button
+            <NavTabButton
               key={t.id}
-              className={`nav ${t.id === tab ? "active" : ""}`}
-              onClick={() => setTab(t.id)}
-            >
-              <Icon name={t.icon} />
-              <span>{t.label}</span>
-            </button>
+              tab={t}
+              active={t.id === tab}
+              onSelect={() => setTab(t.id)}
+            />
           ))}
           <div className="sidebar-foot">
             <Icon name="shield" size={13} />

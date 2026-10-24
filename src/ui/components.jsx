@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useIconHover } from "@animateicons/react";
+import { CircleCheck, CircleAlert } from "@animateicons/react/lucide";
 
 export function Section({ title, hint, children, actions, icon }) {
   return (
@@ -157,18 +159,51 @@ export function ConfirmModal({ title, children, confirm = "Confirmar", danger, o
   );
 }
 
+function ToastIcon({ kind }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    ref.current?.startAnimation?.();
+  }, []);
+
+  if (kind === "error" || kind === "warn") {
+    return <CircleAlert ref={ref} size={15} />;
+  }
+  return <CircleCheck ref={ref} size={15} />;
+}
+
 export function Toasts({ items }) {
   return (
     <div className="toasts" aria-live="polite">
       {items.map((t) => (
         <div key={t.id} className={`toast ${t.kind}`}>
           <div className="toast-icon">
-            <Icon name={t.kind === "error" ? "alert" : t.kind === "warn" ? "warn" : "check"} size={15} />
+            <ToastIcon kind={t.kind} />
           </div>
           <span className="toast-message">{t.text}</span>
         </div>
       ))}
     </div>
+  );
+}
+
+export function ActionButton({ icon: IconComp, iconSize = 14, children, className = "btn", onClick, disabled, title, type = "button", ...rest }) {
+  const { ref, triggerProps } = useIconHover({ trigger: "both" });
+  return (
+    <button
+      type={type}
+      className={className}
+      disabled={disabled}
+      title={title}
+      {...triggerProps}
+      {...rest}
+      onClick={(e) => {
+        triggerProps.onClick?.(e);
+        onClick?.(e);
+      }}
+    >
+      {IconComp && <IconComp ref={ref} size={iconSize} />}
+      {children}
+    </button>
   );
 }
 
