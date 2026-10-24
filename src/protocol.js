@@ -127,24 +127,35 @@ export function decodeConfig(resp) {
 }
 
 // Respuesta de 64 bytes de readButtons: 8 entradas de 4 bytes desde el índice 8.
+// `FF FF FF FF` = nunca tocado desde la web: se trata como la entrada de fábrica.
 export function decodeButtons(resp) {
   const out = [];
   for (let i = 0; i < 8; i++) {
     const o = 8 + i * 4;
-    out.push({ type: resp[o], code1: resp[o + 1], code2: resp[o + 2], code3: resp[o + 3] });
+    const raw = [resp[o], resp[o + 1], resp[o + 2], resp[o + 3]];
+    const factory = raw.every((b) => b === 0xff);
+    const bytes = factory ? [...FACTORY_BUTTONS[i]] : raw;
+    out.push({ bytes, factory, action: decodeAction(bytes) });
   }
   return out;
 }
 
+const isByte = (v) => Number.isInteger(v) && v >= 0 && v <= 255;
+
 // Valida el objeto de configuración antes de enviarlo al mouse.
 export function validateConfig(c) {
   const errors = [];
+  if (!c || typeof c !== "object") return ["configuración vacía"];
   if (!Array.isArray(c.dpi) || c.dpi.length !== 6) errors.push("dpi debe tener 6 valores");
-  if (c.dpi_count < 1 || c.dpi_count > 6) errors.push("dpi_count debe estar entre 1 y 6");
-  if (c.dpi_index < 0 || c.dpi_index >= c.dpi_count) errors.push("dpi_index fuera de rango");
-  if (c.report_rate < 0 || c.report_rate > 7) errors.push("report_rate fuera de rango");
+  if (!Number.isInteger(c.dpi_count) || c.dpi_count < 1 || c.dpi_count > 6) errors.push("dpi_count debe estar entre 1 y 6");
+  if (!Number.isInteger(c.dpi_index) || c.dpi_index < 0 || c.dpi_index >= c.dpi_count) errors.push("dpi_index fuera de rango");
+  if (!Number.isInteger(c.report_rate) || c.report_rate < 0 || c.report_rate > 3) errors.push("report_rate fuera de rango (0-3)");
+  if (!Number.isInteger(c.light_mode) || c.light_mode < 0 || c.light_mode > 6) errors.push("light_mode fuera de rango (0-6)");
   for (const v of c.dpi || []) {
     if (!Number.isInteger(v) || v < 50 || v > 26000) errors.push(`DPI inválido: ${v}`);
+  }
+  for (const k of ["scroll_flag", "lod_value", "sensor_flag", "key_respond", "sleep_light", "highspeed_mode", "wakeup_flag"]) {
+    if (!isByte(c[k])) errors.push(`${k} debe ser un byte (0-255)`);
   }
   return errors;
 }
@@ -191,32 +202,163 @@ export function splitFrame(frame) {
   return { reportId: frame[0], payload: Uint8Array.from(frame.slice(1)) };
 }
 
+
 // Escritura de la tabla de botones (comando 0x09): 8 entradas de 4 bytes desde f[9].
+// `len` es 0x31 en asignaciones y 0x20 en "Reset All Keys" / fábrica.
 // Confirmado contra el sendReport real de la web (captures/12 y 13).
-cmd.writeButtons = (entries) => {
+cmd.writeButtons = (entries, len = 0x31) => {
   if (entries.length !== 8) throw new RangeError("se necesitan 8 entradas de botón");
   const f = blank();
-  [f[1], f[2], f[3], f[4], f[5]] = [MAGIC, 0x09, 0xa5, 0x22, 0x31];
-  entries.forEach((e, i) => e.forEach((b, j) => (f[9 + i * 4 + j] = b)));
+  [f[1], f[2], f[3], f[4], f[5]] = [MAGIC, 0x09, 0xa5, 0x22, len];
+  entries.forEach((e, i) => {
+    if (e.length !== 4 || !e.every(isByte)) throw new RangeError(`entrada de botón ${i + 1} inválida`);
+    e.forEach((b, j) => (f[9 + i * 4 + j] = b));
+  });
   return f;
 };
 
-// Entradas de botón (4 bytes). Los tipos 0x20/0x21 ya los decodifica decodeButtons.
+cmd.resetButtons = () => cmd.writeButtons(FACTORY_BUTTONS, 0x20);
+
+// Confirmación que cierra la escritura de macros: 55 10 a5 22 00 00 00 05.
+cmd.confirm = () => {
+  const f = blank();
+  [f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8]] = [MAGIC, 0x10, 0xa5, 0x22, 0, 0, 0, 5];
+  return f;
+};
+
+// Entradas de botón (4 bytes).
 export const button = {
   mouse: (mask) => [0x20, mask, 0, 0], // 1 izq, 2 der, 4 central, 8 atrás, 0x10 adelante, 0 = deshabilitado
-  keyboard: (modifiers, usage) => [0x10, modifiers, usage, 0], // modifiers: Ctrl 1, Shift 2, Alt 4, Win 8
-  // loop: 0 = repetir `count` veces, 2 = hasta soltar la tecla, 3 = hasta pulsar otra (2 y 3 por orden, sin confirmar)
+  wheel: (dir) => [0x21, 0x38, dir > 0 ? 1 : 0xff, 0], // rueda arriba (+1) / abajo (-1)
+  dpiLoop: () => [0x21, 0x55, 0, 0], // ciclo de DPI (la codificación que usa el reset)
+  keyboard: (modifiers, usage) => [0x10, modifiers, usage, 0], // modifiers: Ctrl 1, Shift 2, Alt 4, Win 8 (derechos << 4)
+  media: (usage) => [0x30, lo(usage), hi(usage), 0], // código "consumer" HID, p. ej. 0xE9 = volumen +
+  // loop: 0 = repetir `count` veces, 2 = hasta soltar la tecla, 3 = hasta pulsar otra tecla
+  // (confirmado con el código de la web: opciones 516/517/518).
   macro: (index, count = 1, loop = 0) => [0x70, index, count, loop],
 };
 
-// Eventos de macro: { device: "mouse" | "keyboard", code, down, delay }.
-// code = máscara del botón (mouse) o código HID (teclado).
-export function encodeMacro(events) {
-  const data = new Array(64).fill(0);
-  data[0] = 0x40; // dirección de inicio de la macro 0 (little endian: 40 00)
-  events.forEach((e, i) => {
-    const flags = (e.device === "mouse" ? 3 : 2) | (e.down ? 0x40 : 0) | (i === events.length - 1 ? 0x80 : 0);
-    data.push(lo(e.delay), hi(e.delay), flags, e.code);
+// Tabla explícita de fábrica (captura 07 y botón "Reset All Keys" de la web).
+export const FACTORY_BUTTONS = [
+  button.mouse(1), button.mouse(2), button.mouse(4), button.mouse(8), button.mouse(0x10),
+  button.dpiLoop(), button.wheel(1), button.wheel(-1),
+];
+
+// Bytes de 4 -> acción legible. La inversa es encodeAction.
+export function decodeAction([type, c1, c2, c3]) {
+  switch (type) {
+    case 0x20: return { kind: "mouse", mask: c1 };
+    case 0x21:
+      if (c1 === 0x38) return { kind: "wheel", dir: c2 === 1 ? 1 : -1 };
+      if (c1 === 0x55) return { kind: "dpi" };
+      break;
+    case 0xf0: if (c1 === 1 && c2 === 1) return { kind: "dpi" }; break; // otra codificación del botón DPI
+    case 0x10: return { kind: "keyboard", modifiers: c1, usage: c2 };
+    case 0x30: return { kind: "media", usage: toWord(c1, c2) };
+    case 0x70: return { kind: "macro", index: c1, count: c2, loop: c3 };
+  }
+  return { kind: "unknown", bytes: [type, c1, c2, c3] };
+}
+
+export function encodeAction(a) {
+  switch (a.kind) {
+    case "mouse": return button.mouse(a.mask);
+    case "wheel": return button.wheel(a.dir);
+    case "dpi": return button.dpiLoop();
+    case "keyboard": return button.keyboard(a.modifiers, a.usage);
+    case "media": return button.media(a.usage);
+    case "macro": return button.macro(a.index, a.count, a.loop);
+    case "unknown": return [...a.bytes];
+  }
+  throw new TypeError(`acción desconocida: ${a.kind}`);
+}
+
+// Configuración que escribe "Restore Factory Settings" en la web (ver PROTOCOL.md).
+export const FACTORY_CONFIG = {
+  light_mode: 0,
+  report_rate: 3, // 1000 Hz
+  dpi_count: 5,
+  dpi_index: 1, // nivel 2 = 800 DPI
+  dpi: [400, 800, 1200, 1600, 2400, 3200],
+  scroll_flag: 0,
+  lod_value: 1,
+  sensor_flag: 0x35,
+  key_respond: 4,
+  sleep_light: 10,
+  highspeed_mode: 0,
+  wakeup_flag: 0,
+};
+
+// Las 3 escrituras del reset de fábrica, en orden. No toca las macros.
+export function factoryResetFrames() {
+  return [cmd.resetButtons(), cmd.writeConfig(FACTORY_CONFIG), cmd.setLightMode(0)];
+}
+
+// ---- Macros ----
+// Memoria de 4096 bytes: tabla de direcciones u16 LE en [2*i] (macro i) y eventos desde 0x40.
+// Cada evento: [delayLo, delayHi, flags, code]. flags: 3 = mouse, 2 = teclado, 0x40 = pulsar,
+// 0x80 = último evento de la macro. Disposición tomada de la función de la web que arma el buffer;
+// con hardware solo se comprobó la macro 0 (captures/12).
+const MACRO_TABLE = 64;
+const MAX_MACROS = MACRO_TABLE / 2;
+
+export function encodeMacros(macros) {
+  if (macros.length > MAX_MACROS) throw new RangeError(`máximo ${MAX_MACROS} macros`);
+  const data = new Array(MACRO_TABLE).fill(0);
+  macros.forEach((events, m) => {
+    if (!events.length) return;
+    data[m * 2] = lo(data.length);
+    data[m * 2 + 1] = hi(data.length);
+    events.forEach((e, i) => {
+      const delay = Math.max(0, Math.min(0xffff, Math.round(e.delay || 0)));
+      const flags = (e.device === "mouse" ? 3 : 2) | (e.down ? 0x40 : 0) | (i === events.length - 1 ? 0x80 : 0);
+      data.push(lo(delay), hi(delay), flags, e.code & 0xff);
+    });
   });
+  if (data.length > MACRO_SIZE) throw new RangeError("las macros no caben en 4096 bytes");
   return data;
+}
+
+// Eventos: { device: "mouse" | "keyboard", code, down, delay }.
+// code = máscara del botón (mouse) o código HID (teclado).
+export const encodeMacro = (events) => encodeMacros([events]);
+
+// Inversa de encodeMacros (para pruebas y para importar volcados).
+export function decodeMacros(data) {
+  const out = [];
+  for (let m = 0; m < MAX_MACROS; m++) {
+    const addr = toWord(data[m * 2] ?? 0, data[m * 2 + 1] ?? 0);
+    const events = [];
+    if (addr >= MACRO_TABLE && addr !== 0xffff) {
+      for (let p = addr; p + 3 < data.length; p += 4) {
+        const flags = data[p + 2];
+        events.push({ device: (flags & 3) === 3 ? "mouse" : "keyboard", code: data[p + 3],
+          down: !!(flags & 0x40), delay: toWord(data[p], data[p + 1]) });
+        if (flags & 0x80) break;
+      }
+    }
+    out.push(events);
+  }
+  while (out.length && !out[out.length - 1].length) out.pop();
+  return out;
+}
+
+// ---- Respuestas ----
+
+export function decodeVersion(resp) {
+  return [resp[23], resp[24], resp[25]].map((c) => String.fromCharCode(c)).join(".");
+}
+
+export function decodeBattery(resp) {
+  return { level: resp[8], charging: resp[9] === 1 };
+}
+
+export const decodeOnline = (resp) => resp[8] === 2;
+
+// Mensajes no solicitados `aa fa ...` (el mouse los manda solo). Según la web:
+// r[8] = 0xD0 -> batería (r[9] %, r[10] carga); si no -> estado (r[9] = nivel DPI desde 1, r[10] = report rate).
+export function decodeUnsolicited(resp) {
+  if (resp[0] !== 0xaa || resp[1] !== 0xfa) return null;
+  if (resp[8] === 0xd0) return { type: "battery", level: resp[9], charging: resp[10] === 1 };
+  return { type: "status", dpi_index: resp[9] - 1, report_rate: resp[10] - 1 };
 }

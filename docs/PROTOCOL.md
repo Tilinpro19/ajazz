@@ -380,3 +380,32 @@ seguidas (índices = log de `sendReport`, 64 bytes sin Report ID). No toca las m
   configuración; ignorar por ahora).
 - Antes, la configuración en el mouse tenía `lod 0xFF` y `highspeed 0xFF` ("sin configurar"); el reset los fija en 1 y 0.
 - Para la app: `factoryReset()` = escribir botones de fábrica + `writeConfig` con esta tabla + luz 0, sin tocar macros.
+
+## Datos extraídos del código de la web (2026-10-23, `page-8ebf300afffc81d0.js` y chunks 968/249)
+
+Sin hardware: leído del bundle público. Lo que contradice una observación con el mouse queda marcado.
+
+- **Catálogo de acciones** (JSON `j.B.p`): copiado a `src/catalog.js`. Multimedia usa `30 <lo> <hi> 00` con el
+  código "consumer" HID de 16 bits (p. ej. Calculadora `30 92 01`, Home `30 23 02`). Teclado `10 <mods> <hid> 00`;
+  modificadores: LCtrl 1, LShift 2, LAlt 4, LWin 8, RCtrl 0x10, RShift 0x20, RAlt 0x40.
+- **Modos de bucle de macro (confirmado en el código):** `2` = "Loop Until Key is Released", `3` = "Loop Until Any Key
+  is Pressed", `0` = "Loop Count" (veces en el byte 2).
+- **Tabla de macros (función `eI` de la web):** buffer de 64 bytes de cabecera + eventos. La dirección u16 LE de la
+  macro `i` va en `[2*i]`; una macro vacía no recibe dirección (queda `00 00`). Los eventos de todas las macros van
+  seguidos desde `0x40`. Flags del evento: mouse `3`, teclado `2`, un tercer tipo `4` (sin uso en la UI), `0x40` = pulsar,
+  `0x80` = último evento de esa macro. Máximo 32 macros por la tabla (*inferido* del tamaño de la cabecera).
+  Con hardware solo se probó la macro 0. Códigos de mouse en macros: L 1, R 2, M 4, Atrás 8, Adelante 0x10.
+- **Mensajes `aa fa` no solicitados:** si `r[8] = 0xD0` es batería (`r[9]` %, `r[10]` carga); si no, es estado:
+  `r[9]` = nivel de DPI (desde 1) y `r[10]` = report rate (desde 1). El `aa fa ae 23 0a 01 01 01 10 02 04` tras el
+  reset es nivel 2 y 1000 Hz, coherente con la configuración de fábrica.
+- **Report rate:** la web solo ofrece 1000 Hz por cable (`reportRate: {USB: [1000], "2.4G": [125, 250, 500, 1000]}`)
+  y fuerza `report_rate = 3` al guardar en modo USB.
+- **`sensor_flag` es una máscara:** bit `1` = Ripple Control, `0x10` = Linear Correction, `0x20` = Motion Sync.
+  El valor de fábrica `0x35` tiene además los bits `4` (sin nombre en la UI).
+- **`lod_value`:** `1` = 1 mm (bajo), `2` = 2 mm (alto).
+- **`sleep_light`:** opciones 1, 3, 5, 10, 20, 30 y 60 minutos.
+- **`key_respond` y `highspeed_mode`** no tienen control en la UI de la web (los textos "Button Delay Response (ms)"
+  y "Game Safe Mode" existen pero no se usan). La app los muestra como avanzados.
+- **Efectos de luz:** los nombres en orden son Wave, Neon, Cycling Flash, YOYO Ball, Single Flash, Breathing Loop, Off.
+  La web los asigna a los valores 1..6 y Off = 0, pero **con el mouse** se observó 0 = arcoíris y 6 = apagado,
+  5 = respiración. La app usa el orden observado (0 = Wave ... 5 = Breathing Loop, 6 = Off); *a confirmar* el 1-4.

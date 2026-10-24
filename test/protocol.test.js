@@ -83,8 +83,8 @@ test("decodeButtons lee 8 entradas de 4 bytes desde el índice 8", () => {
   resp.splice(12, 4, 33, 56, 1, 0); // rueda arriba
   const btns = decodeButtons(resp);
   assert.equal(btns.length, 8);
-  assert.deepEqual(btns[0], { type: 32, code1: 1, code2: 0, code3: 0 });
-  assert.deepEqual(btns[1], { type: 33, code1: 56, code2: 1, code3: 0 });
+  assert.deepEqual(btns[0], { bytes: [32, 1, 0, 0], factory: false, action: { kind: "mouse", mask: 1 } });
+  assert.deepEqual(btns[1].action, { kind: "wheel", dir: 1 });
 });
 
 test("validateConfig rechaza valores fuera de rango", () => {
