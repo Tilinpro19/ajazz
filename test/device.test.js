@@ -116,6 +116,14 @@ test("Mouse decodifica versión, batería y configuración", async () => {
   assert.deepEqual(btns.map((b) => b.bytes), FACTORY_BUTTONS);
 });
 
+test("batería por el dongle: acepta r[3] = 0x0b aunque no sea checksum (captures/10)", async () => {
+  const real = Array(64).fill(0);
+  real.splice(0, 10, 0xaa, 0x30, 0xa5, 0x0b, 0x0a, 1, 1, 0, 0x5e, 0);
+  const dev = new FakeDevice({ vendorId: 43173, respond: () => [real] });
+  const m = new Mouse(new HidTransport(dev, { timeout: 30, retries: 0 }), { mode: "2.4G" });
+  assert.deepEqual(await m.battery(), { level: 94, charging: false });
+});
+
 test("Mouse no envía configuraciones inválidas", async () => {
   const dev = new FakeDevice();
   const m = new Mouse(new HidTransport(dev, { timeout: 50 }));

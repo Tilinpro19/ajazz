@@ -417,3 +417,11 @@ Sin hardware: leído del bundle público. Lo que contradice una observación con
 - En ese estado el dongle responde por su cuenta: `readConfig` con `r[4] = 0x2e`, DPI todo `FF` y la cola en `FF`;
   `readButtons` todo `FF`; `version` trae el firmware del dongle (`r[20..22] = "273"`, `r[23..25] = "220"`).
 - La app no lee ni escribe la configuración hasta que `online` devuelve `2`.
+
+## Checksum de la batería por el dongle (2026-10-23)
+
+- Por el dongle con el mouse en línea, la respuesta de `0x30` trae siempre `r[3] = 0x0b`: es un eco del byte `[3]`
+  de la petición (`55 30 a5 0b`), no el checksum (en las capturas 10, 11 y en el respaldo actual el checksum daría
+  `0x6a`, `0x6d` y `0x66`). Por cable y con el dongle sin mouse sí es el checksum.
+- `version`, `online`, `readConfig` y `readButtons` cumplen el checksum también por el dongle.
+- La app valida el checksum en esas cuatro lecturas y, en la batería, solo el eco del comando.

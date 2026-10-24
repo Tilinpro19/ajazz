@@ -25,8 +25,10 @@ export class Mouse {
     return decodeVersion(await this.#read(cmd.version()));
   }
 
+  // Por el dongle, r[3] de la batería es un eco de la petición (0x0b), no un checksum:
+  // solo se exige el eco del comando.
   async battery() {
-    return decodeBattery(await this.#read(cmd.battery()));
+    return decodeBattery(await this.transport.request(cmd.battery()));
   }
 
   // Solo tiene sentido con el dongle 2.4G (por cable siempre responde 0).
