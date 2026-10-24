@@ -7,6 +7,7 @@ function Rules({ ctl }) {
   const [exe, setExe] = useState("");
   const [profileId, setProfileId] = useState(store.profiles[0].id);
   const rules = store.autoSwitch.rules;
+
   const add = (name) => {
     const clean = name.trim();
     if (!clean) return;
@@ -15,37 +16,50 @@ function Rules({ ctl }) {
     ctl.setAutoSwitch({ rules: [...others, { exe: withExe, profileId }] });
     setExe("");
   };
+
   const nameOf = (id) => store.profiles.find((p) => p.id === id)?.name ?? "?";
 
   return (
     <>
-      <Field label="Perfil por defecto" hint="Se usa cuando la ventana activa no tiene regla.">
+      <Field label="Perfil por defecto" hint="Se aplica cuando la ventana en primer plano no coincide con ninguna regla de la lista.">
         <select className="select" value={store.autoSwitch.defaultProfileId} onChange={(e) => ctl.setAutoSwitch({ defaultProfileId: e.target.value })}>
           {store.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
         </select>
       </Field>
+
       <table className="events">
-        <thead><tr><th>Programa</th><th>Perfil</th><th /></tr></thead>
+        <thead>
+          <tr><th>Programa ejecutable</th><th>Perfil asignado</th><th /></tr>
+        </thead>
         <tbody>
           {rules.map((r) => (
             <tr key={r.exe}>
               <td><code>{r.exe}</code></td>
-              <td>{nameOf(r.profileId)}</td>
+              <td><strong>{nameOf(r.profileId)}</strong></td>
               <td className="row-actions">
-                <button className="icon-btn" title="Quitar" onClick={() => ctl.setAutoSwitch({ rules: rules.filter((x) => x !== r) })}><Icon name="x" size={14} /></button>
+                <button className="icon-btn" title="Eliminar regla" onClick={() => ctl.setAutoSwitch({ rules: rules.filter((x) => x !== r) })}>
+                  <Icon name="x" size={14} />
+                </button>
               </td>
             </tr>
           ))}
-          {!rules.length && <tr><td colSpan={3} className="hint">Sin reglas todavía.</td></tr>}
+          {!rules.length && <tr><td colSpan={3} className="hint">Sin reglas configuradas todavía. Agrega una abajo con el nombre del juego o programa.</td></tr>}
         </tbody>
       </table>
+
       <div className="row wrap">
         <input className="text" placeholder="juego.exe" value={exe} onChange={(e) => setExe(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add(exe)} />
         <select className="select" value={profileId} onChange={(e) => setProfileId(e.target.value)}>
           {store.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
         </select>
-        <button className="btn ghost" disabled={!exe.trim()} onClick={() => add(exe)}>Agregar regla</button>
-        {foreground && <button className="btn ghost" onClick={() => add(foreground)} title="Último programa en primer plano">Usar {foreground}</button>}
+        <button className="btn ghost" disabled={!exe.trim()} onClick={() => add(exe)}>
+          <Icon name="plus" size={14} /> Agregar regla
+        </button>
+        {foreground && (
+          <button className="btn ghost" onClick={() => add(foreground)} title="Detectado en primer plano">
+            Usar {foreground}
+          </button>
+        )}
       </div>
     </>
   );
@@ -61,9 +75,14 @@ export default function Profiles({ ctl }) {
       <Section
         title="Perfiles"
         hint="Un perfil guarda DPI, tasa de reporte, ajustes, iluminación y botones. Al elegirlo se escribe en el mouse."
+        icon="profiles"
         actions={<>
-          <button className="btn ghost" onClick={ctl.importProfileFile}>Importar</button>
-          <button className="btn primary" onClick={() => setModal({ type: "new" })}><Icon name="plus" size={14} /> Nuevo perfil</button>
+          <button className="btn ghost" onClick={ctl.importProfileFile}>
+            Importar
+          </button>
+          <button className="btn primary" onClick={() => setModal({ type: "new" })}>
+            <Icon name="plus" size={14} /> Nuevo perfil
+          </button>
         </>}
       >
         <ul className="profile-list">
@@ -82,6 +101,7 @@ export default function Profiles({ ctl }) {
                     <button className="btn primary" disabled={!ctl.config && ctl.conn.status === "connected"} onClick={() => ctl.switchProfile(p.id)}>Usar</button>
                   )}
                   <button className="btn ghost" onClick={() => setModal({ type: "rename", profile: p })}>Renombrar</button>
+                  <button className="btn ghost" title="Duplicar este perfil" onClick={() => ctl.duplicateProfile(p.id)}>Duplicar</button>
                   <button className="btn ghost" onClick={() => ctl.exportProfileFile(p.id)}>Exportar</button>
                   <button className="btn ghost danger-text" disabled={store.profiles.length === 1} onClick={() => setModal({ type: "delete", profile: p })}>Eliminar</button>
                 </div>
@@ -91,7 +111,7 @@ export default function Profiles({ ctl }) {
         </ul>
       </Section>
 
-      <Section title="Cambio automático por programa" hint={inElectron ? "Cambia de perfil según el programa en primer plano (solo Windows)." : "Disponible solo en la app de escritorio."}>
+      <Section title="Cambio automático por programa" icon="sparkles" hint={inElectron ? "Cambia de perfil automáticamente según el juego o aplicación en primer plano (solo Windows)." : "Disponible solo en la app de escritorio."}>
         <Toggle label="Activar cambio automático" disabled={!inElectron} checked={store.autoSwitch.enabled} onChange={(enabled) => ctl.setAutoSwitch({ enabled })} />
         {store.autoSwitch.enabled && <Rules ctl={ctl} />}
       </Section>

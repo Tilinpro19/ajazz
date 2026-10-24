@@ -25,7 +25,7 @@ function Recorder({ delayMode, fixedDelay, onDone }) {
     setEvents((list) => {
       const out = [...list];
       if (out.length) {
-        const gap = delayMode === "real" ? Math.round(now - last.current) : delayMode === "fixed" ? fixedDelay : 0;
+        const gap = delayMode === "real" ? Math.max(0, Math.round(now - last.current)) : delayMode === "fixed" ? fixedDelay : 0;
         out[out.length - 1] = { ...out[out.length - 1], delay: Math.min(gap, 65535) };
       }
       out.push({ device, code, down, delay: delayMode === "fixed" ? fixedDelay : 0 });
@@ -59,13 +59,27 @@ function Recorder({ delayMode, fixedDelay, onDone }) {
         onContextMenu={(e) => e.preventDefault()}
         onBlur={() => ref.current?.focus()}
       >
-        <span className="rec-dot" /> Grabando: pulsa teclas o haz clic dentro de este recuadro
-        <div className="rec-live">{events.slice(-8).map((e, i) => <span key={i} className={`chip ${e.down ? "down" : "up"}`}>{eventLabel(e)} {e.down ? "↓" : "↑"}</span>)}</div>
+        <div>
+          <span className="rec-dot" />
+          <strong>Grabando:</strong> pulsa teclas o haz clic dentro de este recuadro
+        </div>
+        <div className="rec-live">
+          {events.slice(-10).map((e, i) => (
+            <span key={i} className={`chip ${e.down ? "down" : "up"}`}>
+              {e.device === "mouse" ? "🖱️ " : "⌨️ "}
+              {eventLabel(e)} {e.down ? "↓" : "↑"}
+            </span>
+          ))}
+        </div>
       </div>
-      <div className="row">
-        <span className="hint">{events.length} eventos</span>
-        <button className="btn ghost" onClick={() => onDone(null)}>Cancelar</button>
-        <button className="btn primary" onClick={() => onDone(events)}><Icon name="stop" size={14} /> Terminar grabación</button>
+      <div className="row spread">
+        <span className="hint">{events.length} eventos capturados</span>
+        <div className="row">
+          <button className="btn ghost" onClick={() => onDone(null)}>Cancelar</button>
+          <button className="btn primary" onClick={() => onDone(events)}>
+            <Icon name="stop" size={14} /> Terminar
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -109,6 +123,7 @@ export default function Macros({ ctl }) {
     used = MACRO_BYTES + 1;
   }
 
+  const usedPct = Math.min(100, Math.round((used / MACRO_BYTES) * 100));
   const setEvents = (fn) => ctl.setMacros((list) => list.map((m, i) => (i === sel ? { ...m, events: fn(m.events) } : m)));
   const editEvent = (i, patch) => setEvents((evs) => evs.map((e, j) => (j === i ? { ...e, ...patch } : e)));
   const move = (i, d) => setEvents((evs) => {
@@ -121,8 +136,19 @@ export default function Macros({ ctl }) {
     <Section
       title="Macros"
       hint="Las macros se guardan en el PC y se escriben todas juntas en la memoria del mouse. Luego asígnalas a un botón."
+      icon="macro"
       actions={<>
-        <span className={`usage ${used > MACRO_BYTES ? "over" : ""}`}>{Math.min(used, 9999)} / {MACRO_BYTES} bytes</span>
+        <div className="memory-meter" title={`Memoria de macros en mouse: ${used} / ${MACRO_BYTES} bytes (${usedPct}%)`}>
+          <span className={`usage ${used > MACRO_BYTES ? "over" : ""}`}>
+            {Math.min(used, 9999)} / {MACRO_BYTES} bytes ({usedPct}%)
+          </span>
+          <div className="memory-meter-bar">
+            <div
+              className={`memory-meter-fill ${usedPct > 90 ? "danger" : usedPct > 70 ? "warn" : ""}`}
+              style={{ width: `${usedPct}%` }}
+            />
+          </div>
+        </div>
         <button className="btn primary" disabled={!ctl.macrosDirty || used > MACRO_BYTES || !ctl.config} onClick={ctl.writeMacros}>
           {ctl.macrosDirty ? "Guardar en el mouse" : "Sin cambios pendientes"}
         </button>
@@ -130,7 +156,9 @@ export default function Macros({ ctl }) {
     >
       <div className="macro-layout">
         <aside className="macro-list">
-          <button className="btn ghost full" disabled={macros.length >= 32} onClick={() => setModal("new")}><Icon name="plus" size={14} /> Nueva macro</button>
+          <button className="btn ghost full" disabled={macros.length >= 32} onClick={() => setModal("new")}>
+            <Icon name="plus" size={14} /> Nueva macro
+          </button>
           <ul>
             {macros.map((m, i) => (
               <li key={m.id}>
@@ -156,9 +184,16 @@ export default function Macros({ ctl }) {
 
               <div className="row wrap">
                 <Segmented options={DELAY_MODES} value={delayMode} onChange={setDelayMode} disabled={recording} />
-                {delayMode === "fixed" && <><NumberInput value={fixedDelay} min={1} max={10000} className="short" onCommit={setFixedDelay} /> <span className="hint">ms</span></>}
+                {delayMode === "fixed" && (
+                  <div className="row">
+                    <NumberInput value={fixedDelay} min={1} max={10000} className="short" onCommit={setFixedDelay} />
+                    <span className="hint">ms</span>
+                  </div>
+                )}
                 {!recording && (
-                  <button className="btn record" onClick={() => setRecording(true)}><Icon name="record" size={14} /> Grabar</button>
+                  <button className="btn record" onClick={() => setRecording(true)}>
+                    <Icon name="record" size={14} /> Grabar
+                  </button>
                 )}
               </div>
 
@@ -181,15 +216,19 @@ export default function Macros({ ctl }) {
                       {current.events.map((e, i) => (
                         <tr key={i}>
                           <td>{i + 1}</td>
-                          <td>{e.device === "mouse" ? "Mouse" : "Teclado"}</td>
-                          <td>{eventLabel(e)}</td>
+                          <td>
+                            <span className="pill">
+                              {e.device === "mouse" ? "Mouse" : "Teclado"}
+                            </span>
+                          </td>
+                          <td><strong>{eventLabel(e)}</strong></td>
                           <td>
                             <select className="select small" value={e.down ? "1" : "0"} onChange={(ev) => editEvent(i, { down: ev.target.value === "1" })}>
                               <option value="1">Pulsar</option>
                               <option value="0">Soltar</option>
                             </select>
                           </td>
-                          <td><NumberInput value={e.delay} min={0} max={65535} className="short" onCommit={(n) => editEvent(i, { delay: n })} /></td>
+                          <td><NumberInput value={Math.max(0, e.delay)} min={0} max={65535} className="short" onCommit={(n) => editEvent(i, { delay: n })} /></td>
                           <td className="row-actions">
                             <button className="icon-btn" disabled={i === 0} onClick={() => move(i, -1)} title="Subir"><Icon name="up" size={14} /></button>
                             <button className="icon-btn" disabled={i === current.events.length - 1} onClick={() => move(i, 1)} title="Bajar"><Icon name="down" size={14} /></button>

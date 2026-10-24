@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
-export function Section({ title, hint, children, actions }) {
+export function Section({ title, hint, children, actions, icon }) {
   return (
     <section className="section">
       <header className="section-head">
-        <div>
-          <h2>{title}</h2>
-          {hint && <p className="hint">{hint}</p>}
+        <div className="section-title-wrap">
+          {icon && <span className="section-icon"><Icon name={icon} size={18} /></span>}
+          <div>
+            <h2>{title}</h2>
+            {hint && <p className="hint">{hint}</p>}
+          </div>
         </div>
         {actions && <div className="section-actions">{actions}</div>}
       </header>
@@ -19,7 +22,7 @@ export function Toggle({ checked, onChange, label, hint, disabled }) {
   return (
     <label className={`toggle ${disabled ? "is-disabled" : ""}`}>
       <span className="toggle-text">
-        <span>{label}</span>
+        <span className="toggle-label">{label}</span>
         {hint && <small className="hint">{hint}</small>}
       </span>
       <input type="checkbox" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} />
@@ -28,7 +31,7 @@ export function Toggle({ checked, onChange, label, hint, disabled }) {
   );
 }
 
-// Grupo de botones de opción única.
+// Grupo de botones de opción única con aspecto segmented pill
 export function Segmented({ options, value, onChange, disabled }) {
   return (
     <div className="segmented" role="radiogroup">
@@ -101,7 +104,10 @@ export function Modal({ title, children, onClose, actions }) {
   return (
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={ref}>
-        <h3>{title}</h3>
+        <div className="modal-head">
+          <h3>{title}</h3>
+          <button className="icon-btn" onClick={onClose} title="Cerrar"><Icon name="x" size={16} /></button>
+        </div>
         <div className="modal-body">{children}</div>
         <div className="modal-actions">{actions}</div>
       </div>
@@ -154,7 +160,14 @@ export function ConfirmModal({ title, children, confirm = "Confirmar", danger, o
 export function Toasts({ items }) {
   return (
     <div className="toasts" aria-live="polite">
-      {items.map((t) => <div key={t.id} className={`toast ${t.kind}`}>{t.text}</div>)}
+      {items.map((t) => (
+        <div key={t.id} className={`toast ${t.kind}`}>
+          <div className="toast-icon">
+            <Icon name={t.kind === "error" ? "alert" : t.kind === "warn" ? "warn" : "check"} size={15} />
+          </div>
+          <span className="toast-message">{t.text}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -177,22 +190,35 @@ export function Icon({ name, size = 18 }) {
     record: "M12 12m-6 0a6 6 0 1 0 12 0a6 6 0 1 0-12 0",
     stop: "M6 6h12v12H6z",
     lock: "M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4",
+    check: "M20 6L9 17l-5-5",
+    copy: "M8 4v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2zM4 8v12a2 2 0 0 0 2 2h10",
+    shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+    sparkles: "M12 3l1.9 4.3L18 9.2l-3.5 3.3.9 4.8L12 15l-3.4 2.3.9-4.8L6 9.2l4.1-1.9L12 3z",
+    alert: "M12 8v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
+    warn: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
+    cpu: "M4 4h16v16H4zM9 9h6v6H9zM9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3",
+    refresh: "M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15",
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
       strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d={paths[name]} />
+      <path d={paths[name] || paths.mouse} />
     </svg>
   );
 }
 
 export function Battery({ level, charging }) {
-  const color = level <= 15 ? "var(--danger)" : level <= 35 ? "var(--warn)" : "var(--ok)";
+  const safeLevel = Math.max(0, Math.min(100, Number(level) || 0));
+  const color = safeLevel <= 15 ? "var(--danger)" : safeLevel <= 35 ? "var(--warn)" : "var(--ok)";
+  const statusTitle = charging ? `Cargando · ${safeLevel}%` : `Batería: ${safeLevel}%`;
+
   return (
-    <span className="battery" title={charging ? "Cargando" : "Batería"}>
-      <span className="battery-body"><span className="battery-fill" style={{ width: `${level}%`, background: color }} /></span>
-      <span>{level}%</span>
-      {charging && <Icon name="bolt" size={14} />}
-    </span>
+    <div className={`battery ${charging ? "is-charging" : ""} ${safeLevel <= 15 ? "is-low" : ""}`} title={statusTitle}>
+      <span className="battery-body" aria-hidden="true">
+        <span className="battery-fill" style={{ width: `${safeLevel}%`, background: color }} />
+      </span>
+      <span className="battery-label">{safeLevel}%</span>
+      {charging && <span className="battery-bolt"><Icon name="bolt" size={13} /></span>}
+    </div>
   );
 }

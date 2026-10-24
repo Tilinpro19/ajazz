@@ -335,6 +335,15 @@ export function useController() {
 
   const renameProfile = useCallback((id, name) => setStore((s) => updateProfile(s, id, { name })), [setStore]);
 
+  const duplicateProfile = useCallback((id) => {
+    const s = live.current.store;
+    const p = s.profiles.find((x) => x.id === id);
+    if (!p) return;
+    const cloned = newProfile(`${p.name} (copia)`, p.config, p.buttons);
+    setStore((x) => addProfile(x, cloned));
+    toast(`Perfil "${cloned.name}" duplicado`);
+  }, [setStore, toast]);
+
   const deleteProfile = useCallback(async (id) => {
     const s = live.current.store;
     const wasActive = s.activeProfileId === id;
@@ -413,7 +422,7 @@ export function useController() {
     conn, info, config, buttons, store, busy, toasts, backup, foreground, macrosDirty,
     requestDevice, applyConfig, applyLight, applyButtons, resetButtons,
     setMacros, addMacro, deleteMacro, writeMacros,
-    switchProfile, createProfile, renameProfile, deleteProfile, exportProfileFile, importProfileFile, setAutoSwitch,
+    switchProfile, createProfile, renameProfile, duplicateProfile, deleteProfile, exportProfileFile, importProfileFile, setAutoSwitch,
     factoryReset, toast,
   };
 }

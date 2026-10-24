@@ -21,17 +21,27 @@ const TABS = [
 function Header({ ctl }) {
   const { conn, info, store } = ctl;
   const connected = conn.status === "connected";
-  const status = !connected ? "Desconectado" : info?.online === false ? "Mouse apagado o fuera de alcance" : info?.firmware ? "Conectado" : "Leyendo…";
+  const isOnline = connected && info?.online !== false;
+  const isSleeping = connected && info?.online === false;
+  const status = !connected ? "Desconectado" : isSleeping ? "En reposo" : info?.firmware ? "Conectado" : "Leyendo…";
+
   return (
     <header className="topbar">
       <div className="device">
-        <div className="device-art" aria-hidden="true"><Icon name="mouse" size={26} /></div>
+        <div className="device-art" aria-hidden="true" title="AJAZZ AJ139 V2 MC">
+          <Icon name="mouse" size={24} />
+        </div>
         <div>
           <div className="device-name">{info?.name || "AJ139 V2 MC"}</div>
           <div className="device-meta">
-            <span className={`dot ${connected && info?.online !== false ? "on" : "off"}`} />
+            <span className={`dot ${isOnline ? "on" : ""}`} />
             <span>{status}</span>
-            {connected && <span className="pill"><Icon name={conn.mode === "USB" ? "usb" : "wireless"} size={13} /> {conn.mode === "USB" ? "Cable USB" : "Dongle 2.4G"}</span>}
+            {connected && (
+              <span className="pill">
+                <Icon name={conn.mode === "USB" ? "usb" : "wireless"} size={13} />
+                {conn.mode === "USB" ? "Cable USB" : "Dongle 2.4G"}
+              </span>
+            )}
             {info?.firmware && <span className="pill">Firmware {info.firmware}</span>}
           </div>
         </div>
@@ -41,8 +51,15 @@ function Header({ ctl }) {
         {store && (
           <label className="profile-picker">
             <span>Perfil</span>
-            <select className="select" value={store.activeProfileId} disabled={ctl.busy} onChange={(e) => ctl.switchProfile(e.target.value)}>
-              {store.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            <select
+              className="select"
+              value={store.activeProfileId}
+              disabled={ctl.busy}
+              onChange={(e) => ctl.switchProfile(e.target.value)}
+            >
+              {store.profiles.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
             </select>
           </label>
         )}
@@ -57,26 +74,37 @@ function Waiting({ ctl }) {
   if (conn.status === "connected" && info?.online === false) {
     return (
       <div className="empty">
-        <Icon name="wireless" size={40} />
+        <div className="empty-icon-wrap">
+          <Icon name="wireless" size={38} />
+        </div>
         <h2>El dongle está conectado, pero el mouse no responde</h2>
         <p>Enciende el mouse o muévelo para despertarlo. La app lo detectará sola.</p>
       </div>
     );
   }
   if (conn.status === "connected") {
-    return <div className="empty"><span className="spinner big" /><h2>Leyendo la configuración del mouse…</h2></div>;
+    return (
+      <div className="empty">
+        <span className="spinner big" />
+        <h2>Leyendo la configuración del mouse…</h2>
+      </div>
+    );
   }
   return (
     <div className="empty">
-      <Icon name="usb" size={40} />
+      <div className="empty-icon-wrap">
+        <Icon name="usb" size={38} />
+      </div>
       <h2>{conn.status === "error" ? "No se pudo abrir el mouse" : "Buscando el AJ139 V2 MC…"}</h2>
       {conn.error && <p className="error-text">{conn.error.message}</p>}
       <ul className="tips">
-        <li>Conecta el mouse con el cable o enchufa el dongle 2.4G.</li>
+        <li>Conecta el mouse con el cable USB o enchufa el dongle 2.4G.</li>
         <li>Cierra la web oficial y otras apps del mouse: solo una puede usarlo a la vez.</li>
         {!inElectron && <li>En el navegador hay que dar permiso con el botón de abajo.</li>}
       </ul>
-      <button className="btn primary" onClick={ctl.requestDevice}>Buscar el mouse</button>
+      <button className="btn primary" onClick={ctl.requestDevice}>
+        <Icon name="refresh" size={14} /> Buscar el mouse
+      </button>
     </div>
   );
 }
@@ -94,12 +122,19 @@ export default function App() {
       <div className="body">
         <nav className="sidebar">
           {TABS.map((t) => (
-            <button key={t.id} className={`nav ${t.id === tab ? "active" : ""}`} onClick={() => setTab(t.id)}>
+            <button
+              key={t.id}
+              className={`nav ${t.id === tab ? "active" : ""}`}
+              onClick={() => setTab(t.id)}
+            >
               <Icon name={t.icon} />
               <span>{t.label}</span>
             </button>
           ))}
-          <div className="sidebar-foot">Sin red · sin telemetría</div>
+          <div className="sidebar-foot">
+            <Icon name="shield" size={13} />
+            <span>Sin red · sin telemetría</span>
+          </div>
         </nav>
         <main className="content">
           {current.needsMouse && !ready ? <Waiting ctl={ctl} /> : <View ctl={ctl} />}
