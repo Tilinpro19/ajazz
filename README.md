@@ -37,6 +37,12 @@ npm run dist    # instalador NSIS y .exe portable en release/
 npm run icon    # regenera build/icon.png y build/icon.ico
 ```
 
+Si `npm run dist` falla con "Cannot create symbolic link" (Windows sin modo desarrollador): extrae a mano el
+`.7z` que electron-builder dejó en `%LOCALAPPDATA%\electron-builder\Cache\winCodeSign\` a la carpeta
+`winCodeSign-2.6.0` con `node_modules\7zip-bin\win\x64\7za.exe x <archivo>.7z -owinCodeSign-2.6.0`
+(los dos errores de enlaces de macOS se pueden ignorar), borra los `.7z` y las carpetas numeradas, y ejecuta
+`npx electron-builder --win nsis portable`.
+
 Estructura:
 
 - `src/protocol.js`: codificación de los comandos HID (ver `docs/PROTOCOL.md`).
