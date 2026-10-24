@@ -152,7 +152,7 @@ export function validateConfig(c) {
   if (!Number.isInteger(c.report_rate) || c.report_rate < 0 || c.report_rate > 3) errors.push("report_rate fuera de rango (0-3)");
   if (!Number.isInteger(c.light_mode) || c.light_mode < 0 || c.light_mode > 6) errors.push("light_mode fuera de rango (0-6)");
   for (const v of c.dpi || []) {
-    if (!Number.isInteger(v) || v < 50 || v > 26000) errors.push(`DPI inválido: ${v}`);
+    if (!Number.isInteger(v) || v < 50 || v > 24000) errors.push(`DPI inválido: ${v}`);
   }
   for (const k of ["scroll_flag", "lod_value", "sensor_flag", "key_respond", "sleep_light", "highspeed_mode", "wakeup_flag"]) {
     if (!isByte(c[k])) errors.push(`${k} debe ser un byte (0-255)`);
