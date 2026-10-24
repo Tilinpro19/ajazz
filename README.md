@@ -12,10 +12,16 @@ Funciona **sin red y sin telemetría**: solo habla con el mouse por HID.
 En la carpeta `release/` (o en la página de descargas del repositorio) hay dos opciones:
 
 - `AJAZZ AJ139 Control Setup x.y.z.exe`: instalador para Windows.
-- `AJAZZ AJ139 Control x.y.z.exe`: versión portable, no se instala.
+- `AJAZZ AJ139 Control x.y.z portable.exe`: versión portable, no se instala.
+
+Windows puede mostrar el aviso de SmartScreen porque el ejecutable no está firmado:
+"Más información" → "Ejecutar de todas formas".
 
 No necesita drivers: Windows reconoce el mouse como dispositivo HID estándar.
 Cierra la web oficial antes de abrir la app (solo un programa puede hablar con el mouse a la vez).
+
+Los perfiles se guardan en `%APPDATA%AJAZZ AJ139 Controlprofiles.json` y, al conectar el mouse por
+primera vez, la app guarda un respaldo de su configuración en la carpeta `respaldos` de ese mismo directorio.
 
 ## Desarrollo
 
@@ -23,21 +29,29 @@ Requisitos: Node 20 o superior, Windows 10/11.
 
 ```bash
 npm install
-npm test        # pruebas del protocolo y de la capa de dispositivo (sin hardware)
+npm test        # pruebas del protocolo, la capa de dispositivo y los perfiles (sin hardware)
+npm run test:ui # abre la app con un mouse simulado y recorre la UI (sin hardware)
 npm start       # compila la UI y abre la app
 npm run dev     # UI con recarga en caliente
 npm run dist    # instalador NSIS y .exe portable en release/
+npm run icon    # regenera build/icon.png y build/icon.ico
 ```
 
 Estructura:
 
 - `src/protocol.js`: codificación de los comandos HID (ver `docs/PROTOCOL.md`).
 - `src/catalog.js`: catálogo de acciones de botón, efectos de luz y teclas.
-- `src/device/`: cola de comandos sobre WebHID y API del mouse.
+- `src/device/`: cola de comandos sobre WebHID, API del mouse y mouse simulado (`demo.js`).
 - `src/profiles.js`: esquema y migraciones de perfiles.
 - `src/ui/`: interfaz en React.
 - `electron/`: proceso principal, permisos HID, perfiles en disco y ventana activa.
 - `scripts/`: utilidades de línea de comandos con `node-hid` (solo lectura).
+
+Modo demo: abre la UI con un mouse simulado (no toca el hardware ni tus perfiles):
+
+```bash
+npx electron scripts/screenshot.js out/capturas 2000 --demo
+```
 
 Antes de la primera escritura con hardware, guarda un respaldo:
 

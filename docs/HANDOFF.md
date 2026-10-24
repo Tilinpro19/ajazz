@@ -22,7 +22,19 @@ Hecho (verificado con hardware, USB y dongle 2.4G, firmware 2.2.0):
 - Scripts de apoyo con `node-hid` (solo lectura salvo indicación): `probe.js`, `watch.js`, `diff.js`, `macros.js`.
 - `captures/`: volcados crudos del mouse (**no se suben a git**).
 
-Pendiente: todo lo que sigue (no existe aún `electron/`, UI, capa de dispositivo ni empaquetado).
+Hecho después (2026-10-23), tareas T0-T7:
+- Repo git con commits por tarea, `.gitignore` y README.
+- `src/protocol.js` completo (T1) y `src/catalog.js` con el catálogo extraído de la web (ver la sección
+  "Datos extraídos del código de la web" de PROTOCOL.md: modos de bucle, tabla de macros, mensajes `aa fa`, bits de `sensor_flag`).
+- `src/device/hid.js` (cola, timeout, reintento, reconexión, `aa fa`), `src/device/mouse.js`, `src/device/demo.js` (mouse simulado).
+- `src/profiles.js` (esquema v1, migración desde v0, exportar/importar con macros).
+- `electron/` (permisos HID sin diálogo, red bloqueada, perfiles en disco, respaldo automático, ventana activa por PowerShell).
+- UI React en `src/ui/` con todas las pestañas. `npm test` (37 pruebas) y `npm run test:ui` (UI sobre el mouse simulado).
+- Empaquetado con `npm run dist` (NSIS + portable en `release/`).
+
+Sin verificar con hardware (el mouse estaba dormido durante el desarrollo; el dongle respondía `online = 1`):
+lecturas con el mouse en línea desde la app y **todas las escrituras**. Ver el checklist T8.
+Pendiente de confirmar: efectos de luz 1-4, `key_respond` y `highspeed_mode`, macros con índice > 0.
 
 ## 3. Decisiones tomadas (no re-discutir sin motivo)
 
