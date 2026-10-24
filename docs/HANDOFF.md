@@ -22,18 +22,21 @@ Hecho (verificado con hardware, USB y dongle 2.4G, firmware 2.2.0):
 - Scripts de apoyo con `node-hid` (solo lectura salvo indicación): `probe.js`, `watch.js`, `diff.js`, `macros.js`.
 - `captures/`: volcados crudos del mouse (**no se suben a git**).
 
-Hecho después (2026-10-23), tareas T0-T7:
+Hecho después (2026-10-23), tareas T0-T7 y correcciones:
 - Repo git con commits por tarea, `.gitignore` y README.
 - `src/protocol.js` completo (T1) y `src/catalog.js` con el catálogo extraído de la web (ver la sección
   "Datos extraídos del código de la web" de PROTOCOL.md: modos de bucle, tabla de macros, mensajes `aa fa`, bits de `sensor_flag`).
 - `src/device/hid.js` (cola, timeout, reintento, reconexión, `aa fa`), `src/device/mouse.js`, `src/device/demo.js` (mouse simulado).
 - `src/profiles.js` (esquema v1, migración desde v0, exportar/importar con macros).
 - `electron/` (permisos HID sin diálogo, red bloqueada, perfiles en disco, respaldo automático, ventana activa por PowerShell).
-- UI React en `src/ui/` con todas las pestañas. `npm test` (37 pruebas) y `npm run test:ui` (UI sobre el mouse simulado).
+- UI React en `src/ui/` rediseñada con todas las pestañas, visualizador interactivo SVG del mouse AJ139 con mapeo bidireccional, barra de memoria de macros en hardware, preajustes rápidos de DPI y nuevo tema gaming pulido.
+- `npm test` (38 pruebas unitarias) y `npm run test:ui` (E2E sobre mouse simulado en Electron).
+- Corrección de lectura de batería por dongle 2.4G (commit `0fe395f`: `r[3]` es eco de comando, no checksum).
+- Verificadas todas las lecturas del mouse real en línea con el dongle (`online = 2`, coincidencia exacta con `probe.js`). Respaldo real guardado en `captures/respaldo.json`.
 - Empaquetado con `npm run dist` (NSIS + portable en `release/`).
 
-Sin verificar con hardware (el mouse estaba dormido durante el desarrollo; el dongle respondía `online = 1`):
-lecturas con el mouse en línea desde la app y **todas las escrituras**. Ver el checklist T8.
+Sin verificar con hardware:
+**Todas las escrituras reales al mouse** (cambiar DPI, botones, macros, luz). Ver el checklist T8.
 Pendiente de confirmar: efectos de luz 1-4, `key_respond` y `highspeed_mode`, macros con índice > 0.
 
 ## 3. Decisiones tomadas (no re-discutir sin motivo)

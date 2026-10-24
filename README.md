@@ -20,7 +20,7 @@ Windows puede mostrar el aviso de SmartScreen porque el ejecutable no está firm
 No necesita drivers: Windows reconoce el mouse como dispositivo HID estándar.
 Cierra la web oficial antes de abrir la app (solo un programa puede hablar con el mouse a la vez).
 
-Los perfiles se guardan en `%APPDATA%AJAZZ AJ139 Controlprofiles.json` y, al conectar el mouse por
+Los perfiles se guardan en `%APPDATA%\AJAZZ AJ139 Control\profiles.json` y, al conectar el mouse por
 primera vez, la app guarda un respaldo de su configuración en la carpeta `respaldos` de ese mismo directorio.
 
 ## Desarrollo
