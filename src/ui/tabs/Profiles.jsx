@@ -38,7 +38,7 @@ function Rules({ ctl }) {
               <td><code>{r.exe}</code></td>
               <td><strong>{nameOf(r.profileId)}</strong></td>
               <td className="row-actions">
-                <button className="icon-btn" title="Eliminar regla" onClick={() => ctl.setAutoSwitch({ rules: rules.filter((x) => x !== r) })}>
+                <button className="icon-btn" aria-label="Eliminar regla" title="Eliminar regla" onClick={() => ctl.setAutoSwitch({ rules: rules.filter((x) => x !== r) })}>
                   <Icon name="x" size={14} />
                 </button>
               </td>

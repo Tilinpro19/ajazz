@@ -108,7 +108,7 @@ export function Modal({ title, children, onClose, actions }) {
       <div className="modal" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={ref}>
         <div className="modal-head">
           <h3>{title}</h3>
-          <button className="icon-btn" onClick={onClose} title="Cerrar"><Icon name="x" size={16} /></button>
+          <button className="icon-btn" aria-label="Cerrar" onClick={onClose} title="Cerrar"><Icon name="x" size={16} /></button>
         </div>
         <div className="modal-body">{children}</div>
         <div className="modal-actions">{actions}</div>

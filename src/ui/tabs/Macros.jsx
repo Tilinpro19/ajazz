@@ -231,9 +231,9 @@ export default function Macros({ ctl }) {
                           </td>
                           <td><NumberInput value={Math.max(0, e.delay)} min={0} max={65535} className="short" onCommit={(n) => editEvent(i, { delay: n })} /></td>
                           <td className="row-actions">
-                            <button className="icon-btn" disabled={i === 0} onClick={() => move(i, -1)} title="Subir"><Icon name="up" size={14} /></button>
-                            <button className="icon-btn" disabled={i === current.events.length - 1} onClick={() => move(i, 1)} title="Bajar"><Icon name="down" size={14} /></button>
-                            <button className="icon-btn" onClick={() => setEvents((evs) => evs.filter((_, j) => j !== i))} title="Quitar"><Icon name="x" size={14} /></button>
+                            <button className="icon-btn" aria-label="Subir" disabled={i === 0} onClick={() => move(i, -1)} title="Subir"><Icon name="up" size={14} /></button>
+                            <button className="icon-btn" aria-label="Bajar" disabled={i === current.events.length - 1} onClick={() => move(i, 1)} title="Bajar"><Icon name="down" size={14} /></button>
+                            <button className="icon-btn" aria-label="Quitar" onClick={() => setEvents((evs) => evs.filter((_, j) => j !== i))} title="Quitar"><Icon name="x" size={14} /></button>
                           </td>
                         </tr>
                       ))}
