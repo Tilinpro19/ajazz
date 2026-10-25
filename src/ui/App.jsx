@@ -51,9 +51,15 @@ function NavTabButton({ tab, active, onSelect }) {
 function Header({ ctl }) {
   const { conn, info, store } = ctl;
   const connected = conn.status === "connected";
-  const isOnline = connected && info?.online !== false;
-  const isSleeping = connected && info?.online === false;
-  const status = !connected ? "Desconectado" : isSleeping ? "En reposo" : info?.firmware ? "Conectado" : "Leyendo…";
+  const isOnline = connected && (conn.mode === "USB" || info?.online === true);
+  const isSleeping = connected && conn.mode !== "USB" && info?.online === false;
+  const status = !connected
+    ? "Desconectado"
+    : isSleeping
+    ? "En reposo / Desconectado"
+    : info?.firmware
+    ? "Conectado"
+    : "Leyendo…";
 
   return (
     <header className="topbar">
@@ -77,7 +83,7 @@ function Header({ ctl }) {
         </div>
       </div>
       <div className="topbar-right">
-        {info?.battery && <Battery level={info.battery.level} charging={info.battery.charging} />}
+        {isOnline && info?.battery && <Battery level={info.battery.level} charging={info.battery.charging} />}
         {store && (
           <label className="profile-picker">
             <span>Perfil</span>
@@ -93,7 +99,9 @@ function Header({ ctl }) {
             </select>
           </label>
         )}
-        {ctl.busy && <span className="spinner" title="Comunicando con el mouse" />}
+        <div className="topbar-spinner-slot">
+          {ctl.busy && <span className="spinner" title="Comunicando con el mouse" />}
+        </div>
       </div>
     </header>
   );
