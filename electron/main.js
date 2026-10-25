@@ -1,6 +1,6 @@
 // Proceso principal: ventana, permisos HID sin diálogo, bloqueo de red, perfiles en disco
 // y detector de ventana activa (Windows).
-import { app, BrowserWindow, session, ipcMain, dialog, Menu, shell } from "electron";
+import { app, BrowserWindow, session, ipcMain, dialog, Menu, shell, nativeTheme } from "electron";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -38,6 +38,7 @@ function setupSession(ses) {
 }
 
 function createWindow() {
+  nativeTheme.themeSource = "dark";
   win = new BrowserWindow({
     width: 1220,
     height: 780,
@@ -47,6 +48,12 @@ function createWindow() {
     title: "AJAZZ AJ139 Control",
     icon: path.join(here, "..", "build", "icon.png"),
     autoHideMenuBar: true,
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "#0e1219",
+      symbolColor: "#94a3b8",
+      height: 38,
+    },
     webPreferences: {
       preload: path.join(here, "preload.cjs"),
       contextIsolation: true,
@@ -54,7 +61,6 @@ function createWindow() {
       sandbox: true,
     },
   });
-  setupSession(win.webContents.session);
   // Enlaces externos: nunca dentro de la app.
   win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   win.webContents.on("will-navigate", (e, url) => {

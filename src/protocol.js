@@ -359,6 +359,17 @@ export const decodeOnline = (resp) => resp[8] === 2;
 // r[8] = 0xD0 -> batería (r[9] %, r[10] carga); si no -> estado (r[9] = nivel DPI desde 1, r[10] = report rate).
 export function decodeUnsolicited(resp) {
   if (resp[0] !== 0xaa || resp[1] !== 0xfa) return null;
-  if (resp[8] === 0xd0) return { type: "battery", level: resp[9], charging: resp[10] === 1 };
-  return { type: "status", dpi_index: resp[9] - 1, report_rate: resp[10] - 1 };
+  if (resp[8] === 0xd0) {
+    const level = resp[9];
+    if (Number.isInteger(level) && level >= 0 && level <= 100) {
+      return { type: "battery", level, charging: resp[10] === 1 };
+    }
+    return null;
+  }
+  const dpi_index = resp[9] - 1;
+  const report_rate = resp[10] - 1;
+  if (dpi_index >= 0 && dpi_index < 6 && report_rate >= 0 && report_rate <= 3) {
+    return { type: "status", dpi_index, report_rate };
+  }
+  return null;
 }

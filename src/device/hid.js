@@ -121,6 +121,7 @@ export class DeviceManager extends Emitter {
     this.options = options;
     this.state = { status: "searching" };
     this.busy = false;
+    this.rescan = false;
   }
 
   async start() {
@@ -133,13 +134,35 @@ export class DeviceManager extends Emitter {
 
   // Pide permiso con el selector (en Electron lo resuelve main.js sin diálogo).
   async request() {
-    const devices = await this.hid.requestDevice({ filters: HID_FILTERS });
-    await this.#connect(pick(devices));
+    let devices = [];
+    try {
+      devices = await this.hid.requestDevice({ filters: HID_FILTERS });
+    } catch (err) {
+      if (err?.name !== "NotFoundError") throw err; // sin dispositivo / selector cancelado
+    }
+    const device = pick(devices);
+    if (!device) throw new Error("No se encontró el mouse. Revisa el cable USB o el dongle 2.4G.");
+    await this.#connect(device);
   }
 
   async scan() {
-    if (this.state.status === "connected" || this.busy) return;
-    await this.#connect(pick(await this.hid.getDevices()));
+    if (this.busy) {
+      this.rescan = true; // se repite al terminar la conexión en curso
+      return;
+    }
+    const devices = await this.hid.getDevices();
+    const best = pick(devices);
+    if (!best) {
+      if (this.state.status === "connected") await this.#drop();
+      return;
+    }
+    if (this.state.status === "connected" && this.state.device === best) return;
+    if (this.state.status === "connected") {
+      const { transport } = this.state;
+      this.#set({ status: "searching" });
+      await transport?.close();
+    }
+    await this.#connect(best);
   }
 
   async #connect(device) {
@@ -153,6 +176,10 @@ export class DeviceManager extends Emitter {
       this.#set({ status: "error", error });
     } finally {
       this.busy = false;
+      if (this.rescan) {
+        this.rescan = false;
+        this.scan().catch(() => {});
+      }
     }
   }
 

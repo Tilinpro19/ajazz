@@ -33,7 +33,9 @@ export function useController() {
   const mouseRef = useRef(null);
   const managerRef = useRef(null);
   const live = useRef({});
-  live.current = { config, buttons, store, info, macrosDirty };
+  live.current = { config, buttons, store, info, macrosDirty, busy };
+  const switching = useRef(false); // mientras se aplica un perfil, el mouse aún tiene el anterior
+  const switchQueue = useRef(Promise.resolve());
   const chain = useRef(Promise.resolve());
 
   const toast = useCallback((text, kind = "info") => {
@@ -84,6 +86,7 @@ export function useController() {
 
   // Guarda en el perfil activo lo que hay ahora en el mouse.
   const syncActive = useCallback((patch) => {
+    if (switching.current) return;
     setStore((s) => (s ? updateProfile(s, s.activeProfileId, patch) : s));
   }, [setStore]);
 
@@ -99,7 +102,10 @@ export function useController() {
     const battery = await mouse.battery();
     const cfg = await mouse.readConfig();
     const btns = await mouse.readButtons();
-    setInfo((i) => ({ ...i, firmware, battery, online: true }));
+    const validBattery = (battery && Number.isFinite(battery.level) && battery.level >= 1 && battery.level <= 100)
+      ? battery
+      : (live.current.info?.battery || null);
+    setInfo((i) => ({ ...i, firmware, battery: validBattery, online: true }));
     setConfig(cfg);
     setButtons(btns.map((b) => b.action));
     syncActive({ config: cfg, buttons: btns.map((b) => b.action) });
@@ -133,7 +139,12 @@ export function useController() {
       mouseRef.current = mouse;
       setInfo({ mode: state.mode, name: DEMO ? "AJ139 V2 MC (demo)" : "AJ139 V2 MC", online: null });
       offUnsolicited = state.transport.on("unsolicited", (ev) => {
-        if (ev.type === "battery") setInfo((i) => i && { ...i, battery: { level: ev.level, charging: ev.charging } });
+        if (ev.type === "battery") {
+          const lvl = Number(ev.level);
+          if (Number.isFinite(lvl) && lvl >= 1 && lvl <= 100) {
+            setInfo((i) => i && { ...i, battery: { level: lvl, charging: Boolean(ev.charging) } });
+          }
+        }
         if (ev.type === "status") {
           setConfig((c) => {
             if (!c) return c;
@@ -158,26 +169,56 @@ export function useController() {
     };
   }, [loadFromMouse, syncActive, toast]);
 
-  // Batería cada minuto; con el dongle, espera a que el mouse se encienda.
+  // Polling de estado en línea (cada 2.5s) y batería periódica (~30s).
   useEffect(() => {
     if (conn.status !== "connected") return;
-    const offline = info?.online === false;
-    const t = setInterval(async () => {
+    let cancelled = false;
+    let ticks = 0;
+    let misses = 0;
+
+    const poll = async () => {
       const mouse = mouseRef.current;
-      if (!mouse) return;
+      // Durante una escritura no se compite por el canal (los timeouts parecerían desconexión).
+      if (!mouse || cancelled || live.current.busy || switching.current) return;
       try {
-        if (offline) {
-          if (await mouse.online()) await loadFromMouse(mouse);
-        } else {
+        if (mouse.mode !== "USB") {
+          const isOnline = await mouse.online();
+          if (cancelled) return;
+          if (!isOnline) {
+            // Un solo fallo puede ser una respuesta perdida: se exigen 2 seguidos.
+            if (++misses >= 2) setInfo((i) => (i ? (i.online === false ? i : { ...i, online: false }) : i));
+            return;
+          }
+          misses = 0;
+          if (live.current.info?.online === false) {
+            await loadFromMouse(mouse);
+            return;
+          }
+        }
+        ticks++;
+        if (ticks % 12 === 1 || !live.current.info?.battery) {
           const battery = await mouse.battery();
-          setInfo((i) => i && { ...i, battery });
+          if (cancelled) return;
+          const lvl = Number(battery?.level);
+          if (Number.isFinite(lvl) && lvl >= 1 && lvl <= 100) {
+            setInfo((i) => i && { ...i, battery: { level: lvl, charging: Boolean(battery.charging) }, online: true });
+          }
+        } else {
+          setInfo((i) => (i && i.online !== true ? { ...i, online: true } : i));
         }
       } catch {
-        if (mouse.mode !== "USB") setInfo((i) => i && { ...i, online: false });
+        if (!cancelled && mouse.mode !== "USB" && ++misses >= 2) {
+          setInfo((i) => (i ? { ...i, online: false } : i));
+        }
       }
-    }, offline ? ONLINE_POLL_MS : BATTERY_POLL_MS);
-    return () => clearInterval(t);
-  }, [conn.status, info?.online, loadFromMouse]);
+    };
+
+    const t = setInterval(poll, 2500);
+    return () => {
+      cancelled = true;
+      clearInterval(t);
+    };
+  }, [conn.status, conn.mode, loadFromMouse]);
 
   // Al volver a la ventana se relee la configuración (el botón de luz y el de DPI la cambian).
   useEffect(() => {
@@ -198,7 +239,7 @@ export function useController() {
     try {
       await managerRef.current?.request();
     } catch (err) {
-      toast(`No se encontró el mouse: ${err.message}`, "error");
+      toast(err.message, "error");
     }
   }, [toast]);
 
@@ -259,10 +300,17 @@ export function useController() {
     setStore(next);
     setMacrosDirty(true);
     // Si el perfil activo usaba la macro, sus botones cambiaron: se reescriben.
+    // Los índices de las macros siguientes se desplazan: se reescriben macros y botones juntos.
     const nextButtons = activeProfile(next).buttons;
     if (mouseRef.current && JSON.stringify(nextButtons) !== JSON.stringify(live.current.buttons)) {
       setButtons(nextButtons);
-      await run("Actualizar botones", (m) => m.writeButtons(nextButtons)).catch(() => {});
+      try {
+        await run("Actualizar botones", async (m) => {
+          await m.writeMacros(next.macros.map((x) => x.events));
+          await m.writeButtons(nextButtons);
+        });
+        setMacrosDirty(false);
+      } catch { /* el error ya se mostró */ }
     }
   }, [run, setStore]);
 
@@ -310,19 +358,32 @@ export function useController() {
     setButtons(clone(profile.buttons));
   }, [run, writeMacros]);
 
-  const switchProfile = useCallback(async (id, { quiet = false } = {}) => {
-    const s = live.current.store;
-    const profile = s?.profiles.find((p) => p.id === id);
-    if (!profile || s.activeProfileId === id) return;
-    if (!mouseRef.current) {
-      setStore((x) => ({ ...x, activeProfileId: id }));
-      return;
-    }
-    try {
-      await writeProfile(profile);
-      setStore((x) => ({ ...x, activeProfileId: id }));
-      if (!quiet) toast(`Perfil "${profile.name}" aplicado`);
-    } catch { /* el error ya se mostró */ }
+  // Los cambios se encadenan: cada uno parte del estado en que dejó el anterior.
+  // Devuelve true si el perfil quedó aplicado.
+  const switchProfile = useCallback((id, { quiet = false } = {}) => {
+    const job = switchQueue.current.then(async () => {
+      const s = live.current.store;
+      const profile = s?.profiles.find((p) => p.id === id);
+      if (!profile || s.activeProfileId === id) return false;
+      const previousId = s.activeProfileId;
+      switching.current = true;
+      try {
+        setStore((x) => ({ ...x, activeProfileId: id }));
+        if (!mouseRef.current) return true;
+        try {
+          await writeProfile(profile);
+          if (!quiet) toast(`Perfil "${profile.name}" aplicado`);
+          return true;
+        } catch {
+          setStore((x) => ({ ...x, activeProfileId: previousId }));
+          return false;
+        }
+      } finally {
+        switching.current = false;
+      }
+    });
+    switchQueue.current = job.catch(() => {});
+    return job;
   }, [setStore, toast, writeProfile]);
 
   const createProfile = useCallback((name) => {
@@ -391,9 +452,9 @@ export function useController() {
       const s = live.current.store;
       if (!s?.autoSwitch.enabled) return;
       const id = profileForExecutable(s, exe);
-      if (id && id !== s.activeProfileId) switchProfile(id, { quiet: true }).then(() => {
+      if (id && id !== s.activeProfileId) switchProfile(id, { quiet: true }).then((ok) => {
         const p = s.profiles.find((x) => x.id === id);
-        if (p) toast(`${exe} → perfil "${p.name}"`);
+        if (ok && p) toast(`${exe} → perfil "${p.name}"`);
       });
     });
     const offErr = api.onForegroundError((msg) => console.warn("ventana activa:", msg));

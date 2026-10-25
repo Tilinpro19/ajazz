@@ -172,3 +172,28 @@ test("DeviceManager elige la interfaz de control, prefiere USB y reconecta", asy
   assert.equal(mgr.state.device, usb);
   assert.deepEqual(states, ["connected:2.4G", "searching", "connected:USB"]);
 });
+
+test("DeviceManager.request avisa cuando no hay mouse (NotFoundError o lista vacía)", async () => {
+  const hid = new FakeHid([]);
+  const mgr = new DeviceManager(hid, { timeout: 50 });
+  await assert.rejects(mgr.request(), /No se encontró el mouse/);
+  hid.requestDevice = async () => { throw Object.assign(new Error("Failed to execute"), { name: "NotFoundError" }); };
+  await assert.rejects(mgr.request(), /No se encontró el mouse/);
+  hid.requestDevice = async () => { throw new Error("otro"); };
+  await assert.rejects(mgr.request(), /otro/);
+});
+
+test("DeviceManager repite el escaneo si llega un connect mientras abre otro dispositivo", async () => {
+  const dongle = new FakeDevice({ vendorId: 43173 });
+  const slow = dongle.open.bind(dongle);
+  dongle.open = async () => { await tick(); await slow(); };
+  const hid = new FakeHid([dongle]);
+  const mgr = new DeviceManager(hid, { timeout: 50 });
+  const starting = mgr.start();
+  await new Promise((r) => setTimeout(r, 1));
+  const usb = new FakeDevice();
+  hid.plug(usb); // llega mientras el dongle se está abriendo
+  await starting;
+  await new Promise((r) => setTimeout(r, 30));
+  assert.equal(mgr.state.device, usb);
+});

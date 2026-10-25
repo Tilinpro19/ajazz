@@ -4,6 +4,7 @@ import { spawn } from "node:child_process";
 import { EventEmitter } from "node:events";
 
 const SCRIPT = `
+$ProgressPreference = "SilentlyContinue"
 Add-Type @"
 using System;
 using System.Runtime.InteropServices;
@@ -53,7 +54,10 @@ export class ForegroundWatcher extends EventEmitter {
         }
       }
     });
-    this.proc.stderr.on("data", (d) => this.emit("error", String(d)));
+    this.proc.stderr.on("data", (d) => {
+      const msg = String(d);
+      if (!msg.startsWith("#< CLIXML")) this.emit("error", msg); // CLIXML es ruido de progreso de PowerShell
+    });
     this.proc.on("exit", () => (this.proc = null));
   }
 

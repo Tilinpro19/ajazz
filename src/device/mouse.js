@@ -34,7 +34,11 @@ export class Mouse {
   // Solo tiene sentido con el dongle 2.4G (por cable siempre responde 0).
   async online() {
     if (this.mode === "USB") return true;
-    return decodeOnline(await this.#read(cmd.online()));
+    try {
+      return decodeOnline(await this.#read(cmd.online()));
+    } catch {
+      return false;
+    }
   }
 
   async readConfig() {
