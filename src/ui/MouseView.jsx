@@ -1,10 +1,7 @@
 import { useState } from "react";
 import mouseTransparentImg from "./assets/mouse-transparent.png";
 import { BUTTON_NAMES, describeAction } from "../catalog.js";
-import { Icon } from "./components.jsx";
 
-// Configuración matemática calibrada de los 6 botones físicos sobre el mouse 3D
-// Canvas SVG responsive: 760 x 460 px. Mouse centrado en (265, 20) tamaño 230 x 424.
 const BUTTON_CONFIGS = [
   {
     index: 0,
@@ -86,7 +83,7 @@ export default function MouseView({
   macroNames = [],
   onReset,
 }) {
-  const [viewMode, setViewMode] = useState("buttons"); // "buttons" | "clean"
+  const [viewMode, setViewMode] = useState("buttons");
   const [hovered, setHovered] = useState(null);
 
   const getActionDesc = (index) => {
@@ -103,26 +100,25 @@ export default function MouseView({
 
   return (
     <div className="mouse-view-card">
-      {/* Cabecera del visor interactivo */}
       <div className="mouse-view-header">
         <div className="mouse-view-title-wrap">
-          <span className="mouse-view-badge">AJ139 V2 MC</span>
-          <span className="mouse-view-model-label">Diagrama interactivo de hardware</span>
+          <span className="section-badge">AJ139 V2 MC</span>
+          <span className="mouse-view-model-label">Diagrama de hardware</span>
         </div>
         <div className="mouse-view-toggle">
           <button
             type="button"
             className={`view-toggle-btn ${viewMode === "buttons" ? "active" : ""}`}
             onClick={() => setViewMode("buttons")}
-            title="Mostrar diagrama con botones y asignaciones interactivas"
+            title="Mapeo de botones"
           >
-            Vista asignación
+            Asignación
           </button>
           <button
             type="button"
             className={`view-toggle-btn ${viewMode === "clean" ? "active" : ""}`}
             onClick={() => setViewMode("clean")}
-            title="Mostrar vista limpia 3D del mouse"
+            title="Vista 3D"
           >
             Vista limpia
           </button>
@@ -134,7 +130,7 @@ export default function MouseView({
           <div className="mouse-clean-ambient-glow" />
           <img
             src={mouseTransparentImg}
-            alt="Mouse AJAZZ AJ139 V2 MC"
+            alt="AJAZZ AJ139 V2 MC"
             className="mouse-clean-img"
           />
           <div className="mouse-clean-pedestal" />
@@ -147,14 +143,12 @@ export default function MouseView({
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
-              {/* Resplandor ambiental centrado en el mouse */}
               <radialGradient id="mouseBackdrop" cx="50%" cy="45%" r="50%">
-                <stop offset="0%" stopColor="rgba(0, 229, 199, 0.22)" />
-                <stop offset="45%" stopColor="rgba(0, 160, 255, 0.08)" />
+                <stop offset="0%" stopColor="rgba(0, 245, 160, 0.18)" />
+                <stop offset="45%" stopColor="rgba(0, 210, 255, 0.08)" />
                 <stop offset="85%" stopColor="transparent" />
               </radialGradient>
 
-              {/* Filtro de resplandor neón para elementos seleccionados */}
               <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
                 <feGaussianBlur stdDeviation="3.5" result="blur" />
                 <feMerge>
@@ -163,16 +157,13 @@ export default function MouseView({
                 </feMerge>
               </filter>
 
-              {/* Sombra suave para las tarjetas de botones */}
               <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
                 <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#000000" floodOpacity="0.5" />
               </filter>
             </defs>
 
-            {/* Aura de iluminación ambiental de fondo */}
             <ellipse cx="380" cy="235" rx="140" ry="200" fill="url(#mouseBackdrop)" />
 
-            {/* Imagen del mouse transparente perfectamente centrada */}
             <image
               href={mouseTransparentImg}
               x="265"
@@ -183,7 +174,7 @@ export default function MouseView({
               className="mouse-center-render"
             />
 
-            {/* Hitboxes invisibles sobre los botones físicos del mouse para clic directo */}
+            {/* Hitboxes sobre el mouse */}
             {BUTTON_CONFIGS.map((btn) => (
               <rect
                 key={`hitbox-${btn.index}`}
@@ -193,7 +184,6 @@ export default function MouseView({
                 height={btn.hitbox.h}
                 rx={btn.hitbox.rx}
                 fill="transparent"
-                style={{ cursor: "pointer" }}
                 onClick={() => onSelect(btn.index)}
                 onMouseEnter={() => setHovered(btn.index)}
                 onMouseLeave={() => setHovered(null)}
@@ -202,7 +192,7 @@ export default function MouseView({
               </rect>
             ))}
 
-            {/* Líneas guía conectoras y pines sobre el mouse */}
+            {/* Líneas guía y pines */}
             {BUTTON_CONFIGS.map((btn) => {
               const isSelected = selected === btn.index;
               const isHover = hovered === btn.index;
@@ -210,12 +200,11 @@ export default function MouseView({
 
               return (
                 <g key={`leader-${btn.index}`} className={`leader-group ${active ? "active" : ""}`}>
-                  {/* Resplandor neón de la línea cuando está activa */}
                   {active && (
                     <path
                       d={btn.path}
                       fill="none"
-                      stroke={isSelected ? "#00e5c7" : "#00b4d8"}
+                      stroke={isSelected ? "#00f5a0" : "#00d2ff"}
                       strokeWidth={isSelected ? 3.5 : 2.5}
                       strokeLinecap="round"
                       opacity={isSelected ? 0.45 : 0.25}
@@ -223,55 +212,49 @@ export default function MouseView({
                     />
                   )}
 
-                  {/* Línea principal */}
                   <path
                     d={btn.path}
                     fill="none"
-                    stroke={isSelected ? "#00e5c7" : isHover ? "#00b4d8" : "#2a374c"}
+                    stroke={isSelected ? "#00f5a0" : isHover ? "#00d2ff" : "rgba(255,255,255,0.12)"}
                     strokeWidth={isSelected ? 2.2 : 1.4}
                     strokeDasharray={isSelected ? "none" : isHover ? "4 2" : "none"}
                     strokeLinecap="round"
                     className="leader-line"
                   />
 
-                  {/* Pin interactivo sobre el botón del mouse */}
                   <g
                     className="mouse-pin-target"
                     onClick={() => onSelect(btn.index)}
                     onMouseEnter={() => setHovered(btn.index)}
                     onMouseLeave={() => setHovered(null)}
-                    style={{ cursor: "pointer" }}
                   >
-                    {/* Anillo de pulso animado para el botón seleccionado */}
                     {isSelected && (
                       <circle
                         cx={btn.pin.x}
                         cy={btn.pin.y}
                         r="11"
                         fill="none"
-                        stroke="#00e5c7"
+                        stroke="#00f5a0"
                         strokeWidth="1.5"
                         className="pin-pulse-ring"
                       />
                     )}
 
-                    {/* Halo exterior del pin */}
                     <circle
                       cx={btn.pin.x}
                       cy={btn.pin.y}
                       r={isSelected ? 7 : active ? 6 : 4.5}
-                      fill={active ? "rgba(0, 229, 199, 0.2)" : "#131b28"}
-                      stroke={isSelected ? "#00e5c7" : isHover ? "#00b4d8" : "#3e5270"}
+                      fill={active ? "rgba(0, 245, 160, 0.2)" : "#181c24"}
+                      stroke={isSelected ? "#00f5a0" : isHover ? "#00d2ff" : "rgba(255,255,255,0.2)"}
                       strokeWidth={isSelected ? 2 : 1.5}
                       className="pin-halo"
                     />
 
-                    {/* Núcleo brillante interior */}
                     <circle
                       cx={btn.pin.x}
                       cy={btn.pin.y}
                       r={isSelected ? 3 : 2}
-                      fill={isSelected ? "#ffffff" : isHover ? "#00e5c7" : "#4a6285"}
+                      fill={isSelected ? "#ffffff" : isHover ? "#00f5a0" : "rgba(255,255,255,0.4)"}
                       className="pin-core"
                     />
                   </g>
@@ -279,7 +262,7 @@ export default function MouseView({
               );
             })}
 
-            {/* Tarjetas interactivas de asignación (Callout Cards) */}
+            {/* Tarjetas de botones (Callout Cards) */}
             {BUTTON_CONFIGS.map((btn) => {
               const isSelected = selected === btn.index;
               const isHover = hovered === btn.index;
@@ -294,10 +277,8 @@ export default function MouseView({
                   onClick={() => onSelect(btn.index)}
                   onMouseEnter={() => setHovered(btn.index)}
                   onMouseLeave={() => setHovered(null)}
-                  style={{ cursor: "pointer" }}
                   filter="url(#cardShadow)"
                 >
-                  {/* Fondo de la tarjeta */}
                   <rect
                     x={card.x}
                     y={card.y}
@@ -307,28 +288,27 @@ export default function MouseView({
                     className="callout-card-bg"
                     fill={
                       isSelected
-                        ? "rgba(0, 229, 199, 0.14)"
+                        ? "rgba(0, 245, 160, 0.12)"
                         : isHover
-                        ? "rgba(22, 33, 50, 0.95)"
-                        : "rgba(13, 20, 32, 0.9)"
+                        ? "rgba(28, 32, 40, 0.95)"
+                        : "rgba(15, 19, 28, 0.9)"
                     }
                     stroke={
                       isSelected
-                        ? "#00e5c7"
+                        ? "#00f5a0"
                         : isHover
-                        ? "#00b4d8"
-                        : "rgba(65, 85, 115, 0.55)"
+                        ? "#00d2ff"
+                        : "rgba(255, 255, 255, 0.1)"
                     }
                     strokeWidth={isSelected ? 1.8 : 1}
                   />
 
-                  {/* Círculo indicador con el número del botón (1..6) */}
                   <circle
                     cx={card.x + 22}
                     cy={card.y + 27}
                     r="12"
-                    fill={isSelected ? "#00e5c7" : isHover ? "#00b4d8" : "#222f42"}
-                    stroke={isSelected ? "#00e5c7" : isHover ? "#00b4d8" : "rgba(255,255,255,0.12)"}
+                    fill={isSelected ? "#00f5a0" : isHover ? "#00d2ff" : "#262a33"}
+                    stroke={isSelected ? "#00f5a0" : isHover ? "#00d2ff" : "rgba(255,255,255,0.12)"}
                     strokeWidth="1"
                     className="callout-num-circle"
                   />
@@ -336,7 +316,7 @@ export default function MouseView({
                     x={card.x + 22}
                     y={card.y + 31.5}
                     textAnchor="middle"
-                    fill={isSelected || isHover ? "#03141a" : "#f1f5f9"}
+                    fill={isSelected || isHover ? "#0b0f17" : "#dfe2ee"}
                     fontSize="11.5"
                     fontWeight="700"
                     fontFamily="inherit"
@@ -345,11 +325,10 @@ export default function MouseView({
                     {btn.index + 1}
                   </text>
 
-                  {/* Nombre del botón */}
                   <text
                     x={card.x + 42}
                     y={card.y + 22}
-                    fill={isSelected ? "#ffffff" : isHover ? "#ffffff" : "#e2e8f0"}
+                    fill={isSelected ? "#ffffff" : isHover ? "#ffffff" : "#dfe2ee"}
                     fontSize="13"
                     fontWeight="600"
                     fontFamily="inherit"
@@ -358,16 +337,15 @@ export default function MouseView({
                     {btn.label}
                   </text>
 
-                  {/* Asignación actual o función reconfigurada */}
                   <text
                     x={card.x + 42}
                     y={card.y + 41}
                     fill={
                       custom
-                        ? "#00e5c7"
+                        ? "#00f5a0"
                         : isSelected
-                        ? "#a7f3d0"
-                        : "#94a3b8"
+                        ? "#cdffde"
+                        : "#849588"
                     }
                     fontSize="11.5"
                     fontWeight={custom || isSelected ? "500" : "400"}
@@ -377,13 +355,12 @@ export default function MouseView({
                     {desc.length > 18 ? desc.slice(0, 17) + "…" : desc}
                   </text>
 
-                  {/* Indicador de función personalizada si difiere del valor por defecto */}
                   {custom && (
                     <circle
                       cx={card.x + card.w - 12}
                       cy={card.y + 14}
                       r="3.5"
-                      fill="#00e5c7"
+                      fill="#00f5a0"
                       className="callout-custom-dot"
                     />
                   )}
@@ -392,7 +369,7 @@ export default function MouseView({
             })}
           </svg>
 
-          {/* Barra inferior: configuración de la rueda y botón para restablecer */}
+          {/* Barra inferior: rueda de scroll */}
           <div className="mouse-stage-footer-bar">
             <div className="wheel-subcontrols">
               <span className="wheel-label">Rueda:</span>
@@ -414,16 +391,6 @@ export default function MouseView({
                 );
               })}
             </div>
-
-            <button
-              type="button"
-              className="reset-diagram-btn"
-              onClick={onReset}
-              title="Restablecer todos los botones a los valores de fábrica"
-            >
-              <Icon name="refresh" size={13} />
-              <span>Restablecer botones</span>
-            </button>
           </div>
         </div>
       )}

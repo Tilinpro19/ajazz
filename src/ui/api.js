@@ -34,6 +34,9 @@ const browserApi = {
   openBackups: async () => {},
   appInfo: async () => ({ version: "dev", platform: "browser" }),
   setAutoSwitch: async () => false,
+  getAppSettings: async () => null,
+  setAppSettings: async () => null,
+  setTrayProfile: () => {},
   onForeground: () => () => {},
   onForegroundError: () => () => {},
 };

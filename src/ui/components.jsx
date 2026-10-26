@@ -2,14 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { useIconHover } from "@animateicons/react";
 import { CircleCheck, CircleAlert } from "@animateicons/react/lucide";
 
-export function Section({ title, hint, children, actions, icon }) {
+export function Section({ title, hint, badge, children, actions, icon, className = "" }) {
   return (
-    <section className="section">
+    <section className={`section ${className}`}>
       <header className="section-head">
         <div className="section-title-wrap">
           {icon && <span className="section-icon"><Icon name={icon} size={18} /></span>}
           <div>
-            <h2>{title}</h2>
+            <div className="section-title-row">
+              <h2>{title}</h2>
+              {badge && <span className="section-badge">{badge}</span>}
+            </div>
             {hint && <p className="hint">{hint}</p>}
           </div>
         </div>
@@ -27,13 +30,19 @@ export function Toggle({ checked, onChange, label, hint, disabled }) {
         <span className="toggle-label">{label}</span>
         {hint && <small className="hint">{hint}</small>}
       </span>
-      <input type="checkbox" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} />
-      <span className="toggle-track"><span className="toggle-thumb" /></span>
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      <span className="toggle-track">
+        <span className="toggle-thumb" />
+      </span>
     </label>
   );
 }
 
-// Grupo de botones de opción única con aspecto segmented pill
 export function Segmented({ options, value, onChange, disabled }) {
   return (
     <div className="segmented" role="radiogroup">
@@ -67,16 +76,21 @@ export function Field({ label, hint, children }) {
   );
 }
 
-// Entrada numérica que solo confirma al salir o con Enter (evita una escritura por tecla).
 export function NumberInput({ value, min, max, step = 1, onCommit, disabled, className = "" }) {
   const [draft, setDraft] = useState(String(value));
   useEffect(() => setDraft(String(value)), [value]);
-  const commit = () => {
-    let n = Number(draft);
-    if (!Number.isFinite(n)) return setDraft(String(value));
+  const commit = (e) => {
+    const raw = (e?.target && e.target.value !== "") ? e.target.value : draft;
+    let n = Number(raw);
+    if (!Number.isFinite(n)) {
+      setDraft(String(value));
+      if (e?.target) e.target.value = String(value);
+      return;
+    }
     n = Math.round(n / step) * step;
     n = Math.min(max, Math.max(min, n));
     setDraft(String(n));
+    if (e?.target) e.target.value = String(n);
     if (n !== value) onCommit(n);
   };
   return (
@@ -108,7 +122,9 @@ export function Modal({ title, children, onClose, actions }) {
       <div className="modal" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={ref}>
         <div className="modal-head">
           <h3>{title}</h3>
-          <button className="icon-btn" aria-label="Cerrar" onClick={onClose} title="Cerrar"><Icon name="x" size={16} /></button>
+          <button className="icon-btn" aria-label="Cerrar" onClick={onClose} title="Cerrar">
+            <Icon name="x" size={16} />
+          </button>
         </div>
         <div className="modal-body">{children}</div>
         <div className="modal-actions">{actions}</div>
@@ -117,7 +133,6 @@ export function Modal({ title, children, onClose, actions }) {
   );
 }
 
-// Pide un texto (nombre de perfil o macro).
 export function PromptModal({ title, label, initial = "", confirm = "Aceptar", onSubmit, onClose }) {
   const [text, setText] = useState(initial);
   const submit = () => {
@@ -130,15 +145,23 @@ export function PromptModal({ title, label, initial = "", confirm = "Aceptar", o
     <Modal
       title={title}
       onClose={onClose}
-      actions={<>
-        <button className="btn ghost" onClick={onClose}>Cancelar</button>
-        <button className="btn primary" disabled={!text.trim()} onClick={submit}>{confirm}</button>
-      </>}
+      actions={
+        <>
+          <button className="btn ghost" onClick={onClose}>Cancelar</button>
+          <button className="btn primary" disabled={!text.trim()} onClick={submit}>{confirm}</button>
+        </>
+      }
     >
       <label className="stack">
         <span>{label}</span>
-        <input autoFocus className="text" value={text} maxLength={40} onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && submit()} />
+        <input
+          autoFocus
+          className="text"
+          value={text}
+          maxLength={40}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && submit()}
+        />
       </label>
     </Modal>
   );
@@ -149,10 +172,20 @@ export function ConfirmModal({ title, children, confirm = "Confirmar", danger, o
     <Modal
       title={title}
       onClose={onClose}
-      actions={<>
-        <button className="btn ghost" onClick={onClose}>Cancelar</button>
-        <button className={`btn ${danger ? "danger" : "primary"}`} onClick={() => { onConfirm(); onClose(); }}>{confirm}</button>
-      </>}
+      actions={
+        <>
+          <button className="btn ghost" onClick={onClose}>Cancelar</button>
+          <button
+            className={`btn ${danger ? "danger" : "primary"}`}
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+          >
+            {confirm}
+          </button>
+        </>
+      }
     >
       {children}
     </Modal>
@@ -235,8 +268,17 @@ export function Icon({ name, size = 18 }) {
     refresh: "M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15",
   };
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
-      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d={paths[name] || paths.mouse} />
     </svg>
   );
@@ -244,7 +286,7 @@ export function Icon({ name, size = 18 }) {
 
 export function Battery({ level, charging }) {
   const safeLevel = Math.max(0, Math.min(100, Number(level) || 0));
-  const color = safeLevel <= 15 ? "var(--danger)" : safeLevel <= 35 ? "var(--warn)" : "var(--ok)";
+  const color = safeLevel <= 15 ? "var(--danger)" : safeLevel <= 35 ? "var(--warn)" : "var(--primary)";
   const statusTitle = charging ? `Cargando · ${safeLevel}%` : `Batería: ${safeLevel}%`;
 
   return (
@@ -253,7 +295,58 @@ export function Battery({ level, charging }) {
         <span className="battery-fill" style={{ width: `${safeLevel}%`, background: color }} />
       </span>
       <span className="battery-label">{safeLevel}%</span>
-      {charging && <span className="battery-bolt"><Icon name="bolt" size={13} /></span>}
+      {charging && <span className="battery-bolt"><Icon name="bolt" size={12} /></span>}
+    </div>
+  );
+}
+
+export function CircularBatteryGauge({ level, charging }) {
+  const safeLevel = Math.max(0, Math.min(100, Number(level) || 0));
+  const radius = 28;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (safeLevel / 100) * circumference;
+
+  return (
+    <div className="battery-gauge-card">
+      <div className="battery-gauge-ring-wrap">
+        <svg className="battery-gauge-svg" width="76" height="76" viewBox="0 0 76 76">
+          <circle
+            cx="38"
+            cy="38"
+            r={radius}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.08)"
+            strokeWidth="5"
+          />
+          <circle
+            cx="38"
+            cy="38"
+            r={radius}
+            fill="none"
+            stroke="var(--primary)"
+            strokeWidth="5"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            className="battery-gauge-progress"
+          />
+        </svg>
+        <div className="battery-gauge-center">
+          <span className="battery-gauge-percent">{safeLevel}%</span>
+          <span className="battery-gauge-chem">Li-Ion</span>
+        </div>
+      </div>
+      <div className="battery-gauge-telemetry">
+        <div className="battery-gauge-status">
+          <span className="battery-gauge-title">Autonomía</span>
+          <span className="battery-gauge-value">{charging ? "Cargando vía USB-C" : "~45 Horas (1000 Hz)"}</span>
+        </div>
+        <div className="battery-spec-chips">
+          <span className="spec-chip">300 mAh</span>
+          <span className="spec-chip">3.7V</span>
+          {charging && <span className="spec-chip active">Carga activa</span>}
+        </div>
+      </div>
     </div>
   );
 }

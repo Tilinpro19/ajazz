@@ -15,7 +15,7 @@
     "build": "vite build",
     "start": "vite build && electron .",
     "icon": "node scripts/make-icon.js",
-    "dist": "vite build && electron-builder --win nsis portable"
+    "dist": "vite build && electron-builder --win nsis"
   },
   "dependencies": {
     "@animateicons/react": "^0.12.1",
@@ -45,22 +45,19 @@
       "dist/**",
       "electron/**",
       "src/protocol.js",
-      "package.json"
+      "package.json",
+      "build/icon.png"
     ],
     "win": {
       "icon": "build/icon.ico",
       "target": [
-        "nsis",
-        "portable"
+        "nsis"
       ]
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "shortcutName": "AJAZZ AJ139 Control"
-    },
-    "portable": {
-      "artifactName": "${productName} ${version} portable.exe"
     }
   }
 }

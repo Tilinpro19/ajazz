@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Section, Segmented, ConfirmModal, Icon, NumberInput } from "../components.jsx";
+import { Section, Segmented, ConfirmModal, Icon, NumberInput, Field } from "../components.jsx";
 import {
   BUTTON_NAMES, MOUSE_ACTIONS, MEDIA_ACTIONS, MODIFIERS, KEYS, MACRO_LOOP_MODES,
   describeAction, keyFromEvent, modifierBit,
@@ -15,7 +15,6 @@ const CATEGORIES = [
 ];
 const categoryOf = (a) => (a.kind === "wheel" || a.kind === "dpi" ? "mouse" : CATEGORIES.some((c) => c.value === a.kind) ? a.kind : "mouse");
 
-// Captura una combinación: modificadores + una tecla.
 function KeyCapture({ value, onChange }) {
   const [listening, setListening] = useState(false);
   const onKeyDown = (e) => {
@@ -24,7 +23,6 @@ function KeyCapture({ value, onChange }) {
     const key = keyFromEvent(e);
     let mods = (e.ctrlKey ? 1 : 0) | (e.shiftKey ? 2 : 0) | (e.altKey ? 4 : 0) | (e.metaKey ? 8 : 0);
     if (key && modifierBit(key.usage)) {
-      // Solo un modificador: se guarda como modificador sin tecla.
       onChange({ modifiers: mods | modifierBit(key.usage), usage: 0 });
       return;
     }
@@ -42,7 +40,7 @@ function KeyCapture({ value, onChange }) {
       onBlur={() => setListening(false)}
       onKeyDown={onKeyDown}
     >
-      {listening ? "Pulsa la combinación en el teclado…" : describeAction({ kind: "keyboard", ...value })}
+      {listening ? "Pulsa el atajo deseado…" : describeAction({ kind: "keyboard", ...value })}
     </button>
   );
 }
@@ -61,17 +59,17 @@ function Editor({ index, action, macros, onApply, onSelectButton }) {
   const pick = (a) => !same(a, action) && onApply(a);
 
   return (
-    <div className="editor">
+    <div className="editor editor-card">
       <div className="editor-header">
-        <div className="editor-button-badge">
-          <span className="editor-badge-num">{index + 1}</span>
-          <span className="editor-badge-name">{BUTTON_NAMES[index]}</span>
+        <div className="editor-badge">
+          <span className="badge-num">{index + 1}</span>
+          <span className="badge-name">{BUTTON_NAMES[index]}</span>
         </div>
         <select
-          className="select editor-quick-select"
+          className="select quick-select"
           value={index}
           onChange={(e) => onSelectButton(Number(e.target.value))}
-          title="Cambiar botón a editar"
+          title="Cambiar botón a configurar"
         >
           {BUTTON_NAMES.map((name, i) => (
             <option key={i} value={i}>
@@ -81,47 +79,71 @@ function Editor({ index, action, macros, onApply, onSelectButton }) {
         </select>
       </div>
 
-      <p className="hint">
-        Asignación actual: <strong>{describeAction(action, macros.map((m) => m.name))}</strong>
-      </p>
+      <div className="active-assignment-banner">
+        <span className="meta-label">Asignación actual:</span>
+        <strong className="active-assignment-text">
+          {describeAction(action, macros.map((m) => m.name))}
+        </strong>
+      </div>
 
       <Segmented options={CATEGORIES} value={cat} onChange={setCat} />
 
       {cat === "mouse" && (
-        <div className="choice-grid">
-          {MOUSE_ACTIONS.map((m) => (
-            <button
-              key={m.label}
-              className={`choice ${same(m.action, action) ? "active" : ""}`}
-              onClick={() => pick(m.action)}
-            >
-              {m.label}
-            </button>
-          ))}
+        <div className="command-grid">
+          {MOUSE_ACTIONS.map((m) => {
+            const active = same(m.action, action);
+            return (
+              <button
+                key={m.label}
+                type="button"
+                className={`choice command-item ${active ? "active" : ""}`}
+                onClick={() => pick(m.action)}
+              >
+                <div className="command-item-icon">
+                  <Icon name="mouse" size={15} />
+                </div>
+                <div className="command-item-text">
+                  <span className="command-name">{m.label}</span>
+                  <span className="command-sub">Acción de hardware</span>
+                </div>
+                {active && <span className="active-dot" />}
+              </button>
+            );
+          })}
         </div>
       )}
 
       {cat === "media" && (
-        <div className="choice-grid">
-          {MEDIA_ACTIONS.map((m) => (
-            <button
-              key={m.label}
-              className={`choice ${same(m.action, action) ? "active" : ""}`}
-              onClick={() => pick(m.action)}
-            >
-              {m.label}
-            </button>
-          ))}
+        <div className="command-grid">
+          {MEDIA_ACTIONS.map((m) => {
+            const active = same(m.action, action);
+            return (
+              <button
+                key={m.label}
+                type="button"
+                className={`choice command-item ${active ? "active" : ""}`}
+                onClick={() => pick(m.action)}
+              >
+                <div className="command-item-icon">
+                  <Icon name="sparkles" size={15} />
+                </div>
+                <div className="command-item-text">
+                  <span className="command-name">{m.label}</span>
+                  <span className="command-sub">Control multimedia</span>
+                </div>
+                {active && <span className="active-dot" />}
+              </button>
+            );
+          })}
         </div>
       )}
 
       {cat === "keyboard" && (
-        <div className="stack">
-          <p className="hint">Haz clic en el recuadro y pulsa la tecla o combinación (p. ej. Ctrl + C).</p>
+        <div className="keyboard-editor-stack">
           <KeyCapture value={kb} onChange={setKb} />
-          <div className="row wrap">
+          <div className="modifier-row">
             {MODIFIERS.map((m) => (
-              <label key={m.bit} className="check">
+              <label key={m.bit} className="check-chip">
                 <input
                   type="checkbox"
                   checked={(kb.modifiers & m.bit) !== 0}
@@ -132,15 +154,15 @@ function Editor({ index, action, macros, onApply, onSelectButton }) {
                     })
                   }
                 />
-                {m.label}
+                <span>{m.label}</span>
               </label>
             ))}
             <select
-              className="select"
+              className="select key-select"
               value={kb.usage}
               onChange={(e) => setKb({ ...kb, usage: Number(e.target.value) })}
             >
-              <option value={0}>(sin tecla)</option>
+              <option value={0}>(Sin tecla)</option>
               {KEYS.filter((k) => !modifierBit(k.usage)).map((k) => (
                 <option key={k.usage} value={k.usage}>
                   {k.label}
@@ -162,9 +184,8 @@ function Editor({ index, action, macros, onApply, onSelectButton }) {
 
       {cat === "macro" && (
         macros.length ? (
-          <div className="stack">
-            <label className="stack">
-              <span>Macro</span>
+          <div className="macro-assign-stack">
+            <Field label="Macro seleccionada">
               <select
                 className="select"
                 value={mc.index}
@@ -176,35 +197,38 @@ function Editor({ index, action, macros, onApply, onSelectButton }) {
                   </option>
                 ))}
               </select>
-            </label>
-            <div className="stack">
-              <span>Repetición</span>
-              {MACRO_LOOP_MODES.map((l) => (
-                <label key={l.value} className="radio">
-                  <input
-                    type="radio"
-                    name="loop"
-                    checked={mc.loop === l.value}
-                    onChange={() =>
-                      setMc({ ...mc, loop: l.value, count: l.value === 0 ? mc.count : 1 })
-                    }
-                  />
-                  {l.label}
-                </label>
-              ))}
-              {mc.loop === 0 && (
-                <div className="row">
-                  <span>Veces</span>
-                  <NumberInput
-                    value={mc.count}
-                    min={1}
-                    max={255}
-                    className="short"
-                    onCommit={(n) => setMc({ ...mc, count: n })}
-                  />
-                </div>
-              )}
-            </div>
+            </Field>
+
+            <Field label="Modo de ejecución">
+              <div className="radio-group">
+                {MACRO_LOOP_MODES.map((l) => (
+                  <label key={l.value} className="radio-pill">
+                    <input
+                      type="radio"
+                      name="loop"
+                      checked={mc.loop === l.value}
+                      onChange={() =>
+                        setMc({ ...mc, loop: l.value, count: l.value === 0 ? mc.count : 1 })
+                      }
+                    />
+                    <span>{l.label}</span>
+                  </label>
+                ))}
+              </div>
+            </Field>
+
+            {mc.loop === 0 && (
+              <Field label="Repeticiones">
+                <NumberInput
+                  value={mc.count}
+                  min={1}
+                  max={255}
+                  className="short"
+                  onCommit={(n) => setMc({ ...mc, count: n })}
+                />
+              </Field>
+            )}
+
             <div>
               <button
                 className="btn primary"
@@ -216,7 +240,7 @@ function Editor({ index, action, macros, onApply, onSelectButton }) {
           </div>
         ) : (
           <p className="hint">
-            No hay macros creadas todavía. Ve a la pestaña <strong>Macros</strong> para crear una.
+            No hay macros registradas. Crea una secuencia en la pestaña <strong>Macros</strong>.
           </p>
         )
       )}
@@ -237,14 +261,15 @@ export default function Buttons({ ctl }) {
   };
 
   return (
-    <>
+    <div className="tab-layout">
       <Section
-        title="Botones"
-        hint="Haz clic en cualquier botón del diagrama interactivo o de la lista para reasignar su función."
-        icon="mouse"
+        title="Asignación de botones"
+        badge="HARDWARE REMAP"
+        hint="Haz clic en cualquier botón del mouse para reasignar su función de hardware."
         actions={
           <button className="btn ghost" onClick={() => setConfirmReset(true)}>
-            <Icon name="refresh" size={13} /> Restablecer botones
+            <Icon name="refresh" size={13} />
+            <span>Restablecer fábrica</span>
           </button>
         }
       >
@@ -257,38 +282,6 @@ export default function Buttons({ ctl }) {
               macroNames={macros.map((m) => m.name)}
               onReset={() => setConfirmReset(true)}
             />
-
-            <div className="button-quick-list">
-              <div className="button-quick-list-title">Lista rápida de botones</div>
-              <ul className="button-list button-list-grid">
-                {buttons.map((b, i) => {
-                  const active = i === sel;
-                  const isLeftClick = i === 0;
-                  return (
-                    <li key={i}>
-                      <button
-                        type="button"
-                        className={`button-item ${active ? "active" : ""}`}
-                        onClick={() => setSel(i)}
-                      >
-                        <span className="button-num">{i + 1}</span>
-                        <div className="button-text">
-                          <span>{BUTTON_NAMES[i]}</span>
-                          <small>{describeAction(b, macros.map((m) => m.name))}</small>
-                        </div>
-                        {isLeftClick && (
-                          <Icon
-                            name="lock"
-                            size={13}
-                            title="El botón 1 es el clic principal de seguridad"
-                          />
-                        )}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
           </div>
 
           <Editor
@@ -309,7 +302,7 @@ export default function Buttons({ ctl }) {
           onConfirm={ctl.resetButtons}
           onClose={() => setConfirmReset(false)}
         >
-          <p>Se restaurará la asignación original de los 8 botones:</p>
+          <p>Se restaurará la configuración por defecto de los 8 controles:</p>
           <ul className="tips">
             <li>1: Clic izquierdo · 2: Clic derecho · 3: Clic central</li>
             <li>4: Atrás · 5: Adelante · 6: Ciclo de DPI</li>
@@ -317,6 +310,6 @@ export default function Buttons({ ctl }) {
           </ul>
         </ConfirmModal>
       )}
-    </>
+    </div>
   );
 }

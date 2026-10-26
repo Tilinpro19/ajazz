@@ -464,6 +464,9 @@ export function useController() {
     };
   }, [switchProfile, toast]);
 
+  const activeName = store ? activeProfile(store)?.name : "";
+  useEffect(() => api.setTrayProfile(activeName), [activeName]);
+
   const setAutoSwitch = useCallback((patch) => {
     setStore((s) => ({ ...s, autoSwitch: { ...s.autoSwitch, ...patch } }));
   }, [setStore]);

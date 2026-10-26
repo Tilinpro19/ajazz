@@ -1,6 +1,6 @@
 // Proceso principal: ventana, permisos HID sin diálogo, bloqueo de red, perfiles en disco
 // y detector de ventana activa (Windows).
-import { app, BrowserWindow, session, ipcMain, dialog, Menu, shell, nativeTheme } from "electron";
+import { app, BrowserWindow, session, ipcMain, dialog, Menu, shell, nativeTheme, Tray } from "electron";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -11,8 +11,16 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const DEV_URL = process.env.VITE_DEV_SERVER_URL;
 const STORE_FILE = () => path.join(app.getPath("userData"), "profiles.json");
 const BACKUP_DIR = () => path.join(app.getPath("userData"), "respaldos");
+const SETTINGS_FILE = () => path.join(app.getPath("userData"), "app-settings.json");
+const ICON = path.join(here, "..", "build", "icon.png");
+// Al arrancar con Windows se pasa este argumento para quedarse en la bandeja.
+const HIDDEN_ARG = "--hidden";
 
 let win = null;
+let tray = null;
+let quitting = false;
+let trayProfile = "";
+let settings = { closeToTray: true, startWithWindows: false, startMinimized: true };
 const watcher = new ForegroundWatcher(path.basename(process.execPath));
 
 const isOurDevice = (d) => VENDOR_IDS.includes(d.vendorId) && d.productId === PRODUCT_ID;
@@ -37,16 +45,17 @@ function setupSession(ses) {
   });
 }
 
-function createWindow() {
+function createWindow(visible) {
   nativeTheme.themeSource = "dark";
   win = new BrowserWindow({
     width: 1220,
     height: 780,
     minWidth: 980,
     minHeight: 660,
+    show: visible,
     backgroundColor: "#0e1013",
     title: "AJAZZ AJ139 Control",
-    icon: path.join(here, "..", "build", "icon.png"),
+    icon: ICON,
     autoHideMenuBar: true,
     titleBarStyle: "hidden",
     titleBarOverlay: {
@@ -59,7 +68,14 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      // Oculta en la bandeja la UI sigue atendiendo el HID y el cambio de perfil.
+      backgroundThrottling: false,
     },
+  });
+  win.on("close", (e) => {
+    if (quitting || !settings.closeToTray) return;
+    e.preventDefault();
+    win.hide();
   });
   // Enlaces externos: nunca dentro de la app.
   win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
@@ -70,6 +86,51 @@ function createWindow() {
   else win.loadFile(path.join(here, "..", "dist", "index.html"), { hash: process.env.AJ_DEMO ? "demo" : "" });
   win.on("closed", () => (win = null));
 }
+
+function showWindow() {
+  if (!win) return createWindow(true);
+  if (win.isMinimized()) win.restore();
+  win.show();
+  win.focus();
+}
+
+// ---- Bandeja y ajustes de la app ----
+
+function updateTrayMenu() {
+  if (!tray) return;
+  tray.setToolTip(trayProfile ? `AJAZZ AJ139 Control · ${trayProfile}` : "AJAZZ AJ139 Control");
+  tray.setContextMenu(Menu.buildFromTemplate([
+    { label: "Abrir", click: showWindow },
+    { label: `Perfil: ${trayProfile || "—"}`, enabled: false },
+    { type: "separator" },
+    { label: "Salir", click: () => app.quit() },
+  ]));
+}
+
+function createTray() {
+  tray = new Tray(ICON);
+  tray.on("click", showWindow);
+  updateTrayMenu();
+}
+
+function applyLoginItem() {
+  if (process.platform !== "win32") return;
+  // Sin empaquetar, el ejecutable es electron.exe y necesita la ruta de la app.
+  const args = app.isPackaged ? [HIDDEN_ARG] : [app.getAppPath(), HIDDEN_ARG];
+  app.setLoginItemSettings({ openAtLogin: settings.startWithWindows, path: process.execPath, args });
+}
+
+ipcMain.handle("settings:get", () => settings);
+ipcMain.handle("settings:set", async (_e, patch) => {
+  settings = { ...settings, ...patch };
+  await writeJson(SETTINGS_FILE(), settings);
+  if ("startWithWindows" in patch) applyLoginItem();
+  return settings;
+});
+ipcMain.on("tray:profile", (_e, name) => {
+  trayProfile = String(name || "");
+  updateTrayMenu();
+});
 
 // ---- Perfiles en disco ----
 
@@ -146,19 +207,21 @@ ipcMain.handle("autoswitch:set", (_e, enabled) => {
 
 const primary = app.requestSingleInstanceLock();
 if (!primary) app.quit();
-app.on("second-instance", () => {
-  if (win) {
-    if (win.isMinimized()) win.restore();
-    win.focus();
-  }
-});
+app.on("second-instance", showWindow);
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   if (!primary) return;
   Menu.setApplicationMenu(null);
   setupSession(session.defaultSession);
-  createWindow();
+  const startHidden = process.argv.includes(HIDDEN_ARG);
+  // Si se arranca oculta hay que leer los ajustes antes de decidir; si no, la ventana no espera.
+  const loaded = readJson(SETTINGS_FILE()).then((s) => (settings = { ...settings, ...s }));
+  if (startHidden) await loaded;
+  createWindow(!(startHidden && settings.startMinimized));
+  createTray();
 });
+
+app.on("before-quit", () => (quitting = true));
 
 app.on("window-all-closed", () => {
   watcher.stop();

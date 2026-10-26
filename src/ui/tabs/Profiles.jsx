@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Section, Toggle, Field, PromptModal, ConfirmModal, Icon, ActionButton } from "../components.jsx";
-import { Plus, Copy } from "@animateicons/react/lucide";
+import { Plus } from "@animateicons/react/lucide";
 import { inElectron } from "../api.js";
+
+const LIGHT_MODE_NAMES = ["Ola", "Neón", "Destello", "YOYO", "Pulso", "Respiración", "Apagado"];
 
 function Rules({ ctl }) {
   const { store, foreground } = ctl;
@@ -21,48 +23,88 @@ function Rules({ ctl }) {
   const nameOf = (id) => store.profiles.find((p) => p.id === id)?.name ?? "?";
 
   return (
-    <>
-      <Field label="Perfil por defecto" hint="Se aplica cuando la ventana en primer plano no coincide con ninguna regla de la lista.">
-        <select className="select" value={store.autoSwitch.defaultProfileId} onChange={(e) => ctl.setAutoSwitch({ defaultProfileId: e.target.value })}>
-          {store.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+    <div className="rules-container">
+      <Field
+        label="Perfil predeterminado"
+        hint="Asignado automáticamente cuando la aplicación activa no coincide con ninguna regla."
+      >
+        <select
+          className="select"
+          value={store.autoSwitch.defaultProfileId}
+          onChange={(e) => ctl.setAutoSwitch({ defaultProfileId: e.target.value })}
+        >
+          {store.profiles.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
         </select>
       </Field>
 
-      <table className="events">
+      <table className="events rules-table">
         <thead>
-          <tr><th>Programa ejecutable</th><th>Perfil asignado</th><th /></tr>
+          <tr>
+            <th>Proceso ejecutable</th>
+            <th>Perfil asociado</th>
+            <th className="text-right">Acción</th>
+          </tr>
         </thead>
         <tbody>
           {rules.map((r) => (
             <tr key={r.exe}>
               <td><code>{r.exe}</code></td>
               <td><strong>{nameOf(r.profileId)}</strong></td>
-              <td className="row-actions">
-                <button className="icon-btn" aria-label="Eliminar regla" title="Eliminar regla" onClick={() => ctl.setAutoSwitch({ rules: rules.filter((x) => x !== r) })}>
+              <td className="row-actions text-right">
+                <button
+                  className="icon-btn"
+                  aria-label="Eliminar regla"
+                  title="Eliminar regla"
+                  onClick={() => ctl.setAutoSwitch({ rules: rules.filter((x) => x !== r) })}
+                >
                   <Icon name="x" size={14} />
                 </button>
               </td>
             </tr>
           ))}
-          {!rules.length && <tr><td colSpan={3} className="hint">Sin reglas configuradas todavía. Agrega una abajo con el nombre del juego o programa.</td></tr>}
+          {!rules.length && (
+            <tr>
+              <td colSpan={3} className="hint text-center py-4">
+                No hay reglas configuradas. Añade una regla con el ejecutable del juego o programa.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
 
-      <div className="row wrap">
-        <input className="text" placeholder="juego.exe" value={exe} onChange={(e) => setExe(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add(exe)} />
-        <select className="select" value={profileId} onChange={(e) => setProfileId(e.target.value)}>
-          {store.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+      <div className="rule-add-row">
+        <input
+          className="text"
+          placeholder="ejemplo.exe"
+          value={exe}
+          onChange={(e) => setExe(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && add(exe)}
+        />
+        <select
+          className="select"
+          value={profileId}
+          onChange={(e) => setProfileId(e.target.value)}
+        >
+          {store.profiles.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
         </select>
         <ActionButton icon={Plus} className="btn ghost" disabled={!exe.trim()} onClick={() => add(exe)}>
           Agregar regla
         </ActionButton>
         {foreground && (
-          <button className="btn ghost" onClick={() => add(foreground)} title="Detectado en primer plano">
+          <button className="btn ghost" onClick={() => add(foreground)} title="Proceso en primer plano">
             Usar {foreground}
           </button>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -72,64 +114,173 @@ export default function Profiles({ ctl }) {
   if (!store) return null;
 
   return (
-    <>
+    <div className="tab-layout">
       <Section
-        title="Perfiles"
-        hint="Un perfil guarda DPI, tasa de reporte, ajustes, iluminación y botones. Al elegirlo se escribe en el mouse."
-        icon="profiles"
-        actions={<>
-          <button className="btn ghost" onClick={ctl.importProfileFile}>
-            Importar
-          </button>
-          <ActionButton icon={Plus} className="btn primary" onClick={() => setModal({ type: "new" })}>
-            Nuevo perfil
-          </ActionButton>
-        </>}
+        title="Gestión de perfiles"
+        badge="MEMORIA & CONFIGURACIÓN"
+        hint="Cada perfil almacena DPI, tasa de sondeo, iluminación y mapeo de botones."
+        actions={
+          <div className="profile-header-actions">
+            <button className="btn ghost" onClick={ctl.importProfileFile}>
+              <Icon name="copy" size={13} />
+              <span>Importar</span>
+            </button>
+            <ActionButton icon={Plus} className="btn primary" onClick={() => setModal({ type: "new" })}>
+              Nuevo perfil
+            </ActionButton>
+          </div>
+        }
       >
-        <ul className="profile-list">
-          {store.profiles.map((p) => {
+        <div className="profiles-grid">
+          {store.profiles.map((p, idx) => {
             const active = p.id === store.activeProfileId;
+            const activeDpi = p.config.dpi[p.config.dpi_index] || 1600;
+            const pollingHz = p.config.report_rate === 3 ? 1000 : p.config.report_rate === 2 ? 500 : p.config.report_rate === 1 ? 250 : 125;
+            const lightName = LIGHT_MODE_NAMES[p.config.light_mode] || "Ola";
+
             return (
-              <li key={p.id} className={`profile ${active ? "active" : ""}`}>
-                <div className="profile-main">
-                  <strong>{p.name}</strong>
-                  <small className="hint">
-                    {p.config.dpi.slice(0, p.config.dpi_count).join(" / ")} DPI · nivel {p.config.dpi_index + 1}
-                  </small>
-                </div>
-                <div className="row">
-                  {active ? <span className="badge">Activo</span> : (
-                    <button className="btn primary" disabled={!ctl.config && ctl.conn.status === "connected"} onClick={() => ctl.switchProfile(p.id)}>Usar</button>
+              <div key={p.id} className={`profile profile-card ${active ? "active" : ""}`}>
+                <div className="profile-card-header">
+                  <div className="profile-card-title-group">
+                    <span className="profile-card-name">{p.name}</span>
+                    <span className="profile-card-slot">Slot HW #{idx + 1}</span>
+                  </div>
+                  {active ? (
+                    <span className="profile-badge active">
+                      <span className="badge-glow-dot" />
+                      ACTIVO
+                    </span>
+                  ) : (
+                    <button
+                      className="btn ghost small"
+                      disabled={!ctl.config && ctl.conn.status === "connected"}
+                      onClick={() => ctl.switchProfile(p.id)}
+                    >
+                      Usar
+                    </button>
                   )}
-                  <button className="btn ghost" onClick={() => setModal({ type: "rename", profile: p })}>Renombrar</button>
-                  <ActionButton icon={Copy} className="btn ghost" title="Duplicar este perfil" onClick={() => ctl.duplicateProfile(p.id)}>Duplicar</ActionButton>
-                  <button className="btn ghost" onClick={() => ctl.exportProfileFile(p.id)}>Exportar</button>
-                  <button className="btn ghost danger-text" disabled={store.profiles.length === 1} onClick={() => setModal({ type: "delete", profile: p })}>Eliminar</button>
                 </div>
-              </li>
+
+                {/* Telemetry Chips Grid */}
+                <div className="profile-spec-chips">
+                  <div className="spec-box">
+                    <span className="spec-box-label">DPI BASE</span>
+                    <span className="spec-box-val">{activeDpi}</span>
+                  </div>
+                  <div className="spec-box">
+                    <span className="spec-box-label">SONDEO</span>
+                    <span className="spec-box-val">{pollingHz} Hz</span>
+                  </div>
+                  <div className="spec-box">
+                    <span className="spec-box-label">RGB</span>
+                    <span className="spec-box-val text-cyan">{lightName}</span>
+                  </div>
+                </div>
+
+                {/* DPI Stages Micro Visualizer */}
+                <div className="profile-stages-micro">
+                  <div className="micro-stages-label">
+                    <span>Etapas activas</span>
+                    <span>{p.config.dpi_count} niveles</span>
+                  </div>
+                  <div className="micro-stages-bar">
+                    {[0, 1, 2, 3, 4, 5].slice(0, p.config.dpi_count).map((stageIdx) => (
+                      <div
+                        key={stageIdx}
+                        className={`micro-stage-segment ${stageIdx === p.config.dpi_index ? "active" : ""}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Card Action Footer */}
+                <div className="profile-card-footer">
+                  <button
+                    className="icon-action-btn"
+                    title="Duplicar perfil"
+                    onClick={() => ctl.duplicateProfile(p.id)}
+                  >
+                    <Icon name="copy" size={14} />
+                  </button>
+                  <button
+                    className="icon-action-btn"
+                    title="Renombrar perfil"
+                    onClick={() => setModal({ type: "rename", profile: p })}
+                  >
+                    <Icon name="settings" size={14} />
+                  </button>
+                  <button
+                    className="icon-action-btn"
+                    title="Exportar perfil"
+                    onClick={() => ctl.exportProfileFile(p.id)}
+                  >
+                    <Icon name="up" size={14} />
+                  </button>
+                  {store.profiles.length > 1 && (
+                    <button
+                      className="icon-action-btn danger"
+                      title="Eliminar perfil"
+                      onClick={() => setModal({ type: "delete", profile: p })}
+                    >
+                      <Icon name="x" size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
             );
           })}
-        </ul>
+        </div>
       </Section>
 
-      <Section title="Cambio automático por programa" icon="sparkles" hint={inElectron ? "Cambia de perfil automáticamente según el juego o aplicación en primer plano (solo Windows)." : "Disponible solo en la app de escritorio."}>
-        <Toggle label="Activar cambio automático" disabled={!inElectron} checked={store.autoSwitch.enabled} onChange={(enabled) => ctl.setAutoSwitch({ enabled })} />
+      <Section
+        title="Cambio automático por aplicación"
+        badge="PROCESO EN PRIMER PLANO"
+        hint={
+          inElectron
+            ? "Conmuta perfiles según el ejecutable detectado en Windows."
+            : "Disponible únicamente en la versión instalada de escritorio."
+        }
+      >
+        <Toggle
+          label="Activar conmutación automática de perfiles"
+          disabled={!inElectron}
+          checked={store.autoSwitch.enabled}
+          onChange={(enabled) => ctl.setAutoSwitch({ enabled })}
+        />
         {store.autoSwitch.enabled && <Rules ctl={ctl} />}
       </Section>
 
       {modal?.type === "new" && (
-        <PromptModal title="Nuevo perfil" label="Nombre (se crea con la configuración actual del mouse)" initial={`Perfil ${store.profiles.length + 1}`}
-          confirm="Crear" onSubmit={ctl.createProfile} onClose={() => setModal(null)} />
+        <PromptModal
+          title="Nuevo perfil"
+          label="Nombre del perfil (copiará la calibración actual)"
+          initial={`Perfil ${store.profiles.length + 1}`}
+          confirm="Crear"
+          onSubmit={ctl.createProfile}
+          onClose={() => setModal(null)}
+        />
       )}
       {modal?.type === "rename" && (
-        <PromptModal title="Renombrar perfil" label="Nombre" initial={modal.profile.name}
-          onSubmit={(name) => ctl.renameProfile(modal.profile.id, name)} onClose={() => setModal(null)} />
+        <PromptModal
+          title="Renombrar perfil"
+          label="Nuevo nombre"
+          initial={modal.profile.name}
+          confirm="Guardar"
+          onSubmit={(name) => ctl.renameProfile(modal.profile.id, name)}
+          onClose={() => setModal(null)}
+        />
       )}
       {modal?.type === "delete" && (
-        <ConfirmModal title="Eliminar perfil" danger confirm="Eliminar" onConfirm={() => ctl.deleteProfile(modal.profile.id)} onClose={() => setModal(null)}>
-          Se eliminará el perfil "{modal.profile.name}".
+        <ConfirmModal
+          title="Eliminar perfil"
+          danger
+          confirm="Eliminar"
+          onConfirm={() => ctl.deleteProfile(modal.profile.id)}
+          onClose={() => setModal(null)}
+        >
+          Se eliminará permanentemente el perfil "{modal.profile.name}".
         </ConfirmModal>
       )}
-    </>
+    </div>
   );
 }

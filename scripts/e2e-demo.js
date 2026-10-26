@@ -40,13 +40,13 @@ app.on("browser-window-created", (_e, win) => {
       results.macroBtn = await js(`[...document.querySelectorAll(".section-actions .btn")].map(b => b.textContent).join("|")`);
       await shot("macros");
       await nav("Botones"); await sleep(300);
-      await clickText(".button-item", "Adelante"); await sleep(200);
+      await js(`(() => { const sel = document.querySelector(".editor .quick-select"); const i = [...sel.options].findIndex(o => o.textContent.includes("Adelante")); const set = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set; set.call(sel, String(i)); sel.dispatchEvent(new Event("change", {bubbles:true})); })()`); await sleep(200);
       await clickText(".segmented button", "Macro"); await sleep(200);
       results.assign = await clickText(".editor .btn", "Asignar"); await sleep(600);
-      await clickText(".button-item", "Atrás"); await sleep(200);
+      await js(`(() => { const sel = document.querySelector(".editor .quick-select"); const i = [...sel.options].findIndex(o => o.textContent.includes("Atrás")); const set = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set; set.call(sel, String(i)); sel.dispatchEvent(new Event("change", {bubbles:true})); })()`); await sleep(200);
       await clickText(".segmented button", "Multimedia"); await sleep(200);
       await clickText(".choice", "Volumen +"); await sleep(600);
-      results.buttons = await js(`[...document.querySelectorAll(".button-text small")].map(s => s.textContent).join(" | ")`);
+      results.buttons = await js(`[...document.querySelectorAll(".mouse-callout-card")].map(g => [Number(g.querySelector(".callout-num-text").textContent), g.querySelector(".callout-desc").textContent]).concat([...document.querySelectorAll(".wheel-chip")].map(c => [Number(c.querySelector(".wheel-chip-num").textContent), c.querySelector(".wheel-chip-val").textContent])).sort((a, b) => a[0] - b[0]).map(x => x[1]).join(" | ")`);
       await shot("botones");
       await nav("Perfiles"); await sleep(300);
       await clickText(".btn", "Nuevo perfil"); await sleep(200);

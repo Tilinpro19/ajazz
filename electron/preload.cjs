@@ -16,6 +16,9 @@ contextBridge.exposeInMainWorld("ajazz", {
   openBackups: () => ipcRenderer.invoke("backup:open"),
   appInfo: () => ipcRenderer.invoke("app:info"),
   setAutoSwitch: (enabled) => ipcRenderer.invoke("autoswitch:set", enabled),
+  getAppSettings: () => ipcRenderer.invoke("settings:get"),
+  setAppSettings: (patch) => ipcRenderer.invoke("settings:set", patch),
+  setTrayProfile: (name) => ipcRenderer.send("tray:profile", name),
   onForeground: listen("foreground"),
   onForegroundError: listen("foreground-error"),
 });

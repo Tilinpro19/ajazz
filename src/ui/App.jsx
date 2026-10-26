@@ -56,39 +56,43 @@ function Header({ ctl }) {
   const status = !connected
     ? "Desconectado"
     : isSleeping
-    ? "En reposo / Desconectado"
+    ? "En reposo"
     : info?.firmware
-    ? "Conectado"
-    : "Leyendo…";
+    ? "En línea"
+    : "Sincronizando…";
 
   return (
     <header className="topbar">
-      <div className="device">
-        <div className="device-art" aria-hidden="true" title="AJAZZ AJ139 V2 MC">
-          <Icon name="mouse" size={24} />
+      <div className="topbar-brand-group">
+        <div className="brand-logo" title="AJAZZ Control Suite">
+          <Icon name="gauge" size={20} />
+          <span className="brand-title">HEX SUITE</span>
         </div>
-        <div>
-          <div className="device-name">{info?.name || "AJ139 V2 MC"}</div>
-          <div className="device-meta">
-            <span className={`dot ${isOnline ? "on" : ""}`} />
-            <span>{status}</span>
-            {connected && (
-              <span className="pill">
-                <Icon name={conn.mode === "USB" ? "usb" : "wireless"} size={13} />
-                {conn.mode === "USB" ? "Cable USB" : "Dongle 2.4G"}
-              </span>
-            )}
-            {info?.firmware && <span className="pill">Firmware {info.firmware}</span>}
-          </div>
+        <div className="topbar-divider" />
+        <div className="device-chip">
+          <Icon name="mouse" size={15} />
+          <span className="device-title">{info?.name || "AJ139 V2 MC"}</span>
+          <span className={`status-dot ${isOnline ? "online" : ""}`} title={status} />
+          <span className="status-label">{status}</span>
+          {connected && (
+            <span className="conn-tag">
+              <Icon name={conn.mode === "USB" ? "usb" : "wireless"} size={12} />
+              {conn.mode === "USB" ? "USB-C" : "2.4G"}
+            </span>
+          )}
+          {info?.firmware && <span className="firmware-tag">v{info.firmware}</span>}
         </div>
       </div>
+
       <div className="topbar-right">
-        {isOnline && info?.battery && <Battery level={info.battery.level} charging={info.battery.charging} />}
+        {isOnline && info?.battery && (
+          <Battery level={info.battery.level} charging={info.battery.charging} />
+        )}
         {store && (
-          <label className="profile-picker">
-            <span>Perfil</span>
+          <div className="topbar-profile-slot">
+            <span className="topbar-profile-label">Perfil</span>
             <select
-              className="select"
+              className="select profile-select"
               value={store.activeProfileId}
               disabled={ctl.busy}
               onChange={(e) => ctl.switchProfile(e.target.value)}
@@ -97,7 +101,7 @@ function Header({ ctl }) {
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
-          </label>
+          </div>
         )}
         <div className="topbar-spinner-slot">
           {ctl.busy && <span className="spinner" title="Comunicando con el mouse" />}
@@ -113,10 +117,10 @@ function Waiting({ ctl }) {
     return (
       <div className="empty">
         <div className="empty-icon-wrap">
-          <Icon name="wireless" size={38} />
+          <Icon name="wireless" size={36} />
         </div>
-        <h2>El dongle está conectado, pero el mouse no responde</h2>
-        <p>Enciende el mouse o muévelo para despertarlo. La app lo detectará sola.</p>
+        <h2>Receptor conectado · Mouse en reposo</h2>
+        <p>Mueve el mouse o pulsa un botón para reactivar la conexión.</p>
       </div>
     );
   }
@@ -124,24 +128,24 @@ function Waiting({ ctl }) {
     return (
       <div className="empty">
         <span className="spinner big" />
-        <h2>Leyendo la configuración del mouse…</h2>
+        <h2>Sincronizando telemetría de hardware…</h2>
       </div>
     );
   }
   return (
     <div className="empty">
       <div className="empty-icon-wrap">
-        <Icon name="usb" size={38} />
+        <Icon name="usb" size={36} />
       </div>
-      <h2>{conn.status === "error" ? "No se pudo abrir el mouse" : "Buscando el AJ139 V2 MC…"}</h2>
+      <h2>{conn.status === "error" ? "Error de conexión" : "Buscando AJ139 V2 MC"}</h2>
       {conn.error && <p className="error-text">{conn.error.message}</p>}
       <ul className="tips">
-        <li>Conecta el mouse con el cable USB o enchufa el dongle 2.4G.</li>
-        <li>Cierra la web oficial y otras apps del mouse: solo una puede usarlo a la vez.</li>
-        {!inElectron && <li>En el navegador hay que dar permiso con el botón de abajo.</li>}
+        <li>Conecta el mouse por cable USB o inserta el dongle receptor 2.4G.</li>
+        <li>Cierra otras utilidades o pestañas web del fabricante para evitar conflicto de interfaz.</li>
+        {!inElectron && <li>Concede permisos de acceso WebHID mediante el botón inferior.</li>}
       </ul>
       <ActionButton icon={RefreshCw} className="btn primary" onClick={ctl.requestDevice}>
-        Buscar el mouse
+        Detectar dispositivo
       </ActionButton>
     </div>
   );
@@ -158,22 +162,29 @@ export default function App() {
     <div className="app">
       <Header ctl={ctl} />
       <div className="body">
-        <nav className="sidebar">
-          {TABS.map((t) => (
-            <NavTabButton
-              key={t.id}
-              tab={t}
-              active={t.id === tab}
-              onSelect={() => setTab(t.id)}
-            />
-          ))}
+        <aside className="sidebar">
+          <div className="sidebar-group-title">DISPOSITIVO ACTIVO</div>
+          <nav className="sidebar-nav">
+            {TABS.map((t) => (
+              <NavTabButton
+                key={t.id}
+                tab={t}
+                active={t.id === tab}
+                onSelect={() => setTab(t.id)}
+              />
+            ))}
+          </nav>
           <div className="sidebar-foot">
-            <Icon name="shield" size={13} />
-            <span>Sin red · sin telemetría</span>
+            <span className="telemetry-pill">
+              <span className="telemetry-dot" />
+              <span>PAW3395 · 1000 Hz</span>
+            </span>
           </div>
-        </nav>
+        </aside>
         <main className="content">
-          {current.needsMouse && !ready ? <Waiting ctl={ctl} /> : <View ctl={ctl} />}
+          <div className="content-container">
+            {current.needsMouse && !ready ? <Waiting ctl={ctl} /> : <View ctl={ctl} />}
+          </div>
         </main>
       </div>
       <Toasts items={ctl.toasts} />
