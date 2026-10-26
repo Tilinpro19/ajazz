@@ -18,16 +18,14 @@ export default function Settings({ ctl }) {
   return (
     <div className="tab-layout">
       {/* Battery & Power Telemetry */}
-      <Section title="Gestión de energía" badge="BATERÍA & REPOSO">
+      <Section title="Energía">
         <div className="settings-power-grid">
-          <CircularBatteryGauge
-            level={info?.battery?.level || 85}
-            charging={info?.battery?.charging || false}
-          />
+          {info?.battery && (
+            <CircularBatteryGauge level={info.battery.level} charging={info.battery.charging} />
+          )}
           <div className="settings-power-controls">
             <Field
-              label="Tiempo de inactividad antes de reposo"
-              hint="Apagado selectivo del sensor óptico para conservar batería."
+              label="Reposo tras inactividad"
             >
               <select
                 className="select"
@@ -36,7 +34,7 @@ export default function Settings({ ctl }) {
               >
                 {sleepOptions.map((m) => (
                   <option key={m} value={m}>
-                    {m} min {m === 10 ? "(Recomendado)" : ""}
+                    {m} min
                   </option>
                 ))}
               </select>
@@ -44,7 +42,7 @@ export default function Settings({ ctl }) {
 
             <Toggle
               label="Reactivar al mover el mouse"
-              hint="Si se desactiva, se requiere un clic físico para salir del reposo."
+              hint="Si se desactiva, solo un clic despierta el mouse."
               checked={config.wakeup_flag === 0}
               onChange={(on) => ctl.applyConfig({ wakeup_flag: on ? 0 : 1 })}
             />
@@ -53,12 +51,9 @@ export default function Settings({ ctl }) {
       </Section>
 
       {/* Hardware Performance Controls */}
-      <Section title="Comportamiento del hardware" badge="MICROCONTROLADOR">
+      <Section title="Comportamiento">
         <div className="bento-columns">
-          <Field
-            label="Dirección de la rueda"
-            hint="Orientación del desplazamiento vertical."
-          >
+          <Field label="Dirección de la rueda">
             <Segmented
               options={[
                 { value: 0, label: "Normal" },
@@ -70,8 +65,8 @@ export default function Settings({ ctl }) {
           </Field>
 
           <Field
-            label="Tiempo anti-rebote (Debounce)"
-            hint="Filtrado en milisegundos contra dobles clics espurios (4 ms por defecto)."
+            label="Anti-rebote (debounce)"
+            hint="Milisegundos que se ignora un botón tras pulsarlo, para evitar dobles clics."
           >
             <div className="debounce-row">
               <NumberInput
@@ -82,19 +77,14 @@ export default function Settings({ ctl }) {
                 onCommit={(n) => ctl.applyConfig({ key_respond: n })}
               />
               <span className="unit-label">ms</span>
-              <span className="spec-chip">Huano 80M</span>
             </div>
           </Field>
         </div>
 
         <div className="pt-2">
           <Field
-            label="Modo de alta velocidad del MCU"
-            hint={
-              config.highspeed_mode === 0xff
-                ? "Sin configurar (valor de fábrica del mouse)."
-                : "Acelera el ciclo de procesamiento interno del microcontrolador."
-            }
+            label="Modo de alta velocidad"
+            hint={config.highspeed_mode === 0xff ? "Sin configurar (valor de fábrica)." : undefined}
           >
             <Segmented
               options={[
@@ -109,7 +99,7 @@ export default function Settings({ ctl }) {
       </Section>
 
       {inElectron && appSettings && (
-        <Section title="Aplicación" badge="SEGUNDO PLANO">
+        <Section title="Aplicación">
           <Toggle
             label="Cerrar a la bandeja"
             hint="La X oculta la ventana y la app sigue aplicando perfiles. Para salir, usa el icono de la bandeja."
@@ -133,7 +123,7 @@ export default function Settings({ ctl }) {
 
       {/* Device Specs and Maintenance */}
       <div className="bento-columns">
-        <Section title="Especificaciones del dispositivo" badge="TELEMETRÍA">
+        <Section title="Dispositivo">
           <div className="specs-list">
             <div className="spec-row">
               <span className="spec-key">Modelo</span>
@@ -141,33 +131,33 @@ export default function Settings({ ctl }) {
             </div>
             <div className="spec-row">
               <span className="spec-key">Firmware</span>
-              <span className="spec-val code">v{info?.firmware || "2.2.0"}</span>
+              <span className="spec-val code">{info?.firmware ? `v${info.firmware}` : "—"}</span>
             </div>
             <div className="spec-row">
               <span className="spec-key">Conexión</span>
-              <span className="spec-val">{info?.mode === "USB" ? "Cable USB-C directo" : "Receptor Dongle 2.4G"}</span>
+              <span className="spec-val">{info?.mode === "USB" ? "Cable USB-C" : "Receptor 2.4G"}</span>
             </div>
             <div className="spec-row">
               <span className="spec-key">Sensor</span>
-              <span className="spec-val">PixArt PAW3395 (26.000 DPI)</span>
+              <span className="spec-val">PixArt PAW3395</span>
             </div>
           </div>
         </Section>
 
-        <Section title="Mantenimiento y respaldos" badge="SISTEMA">
+        <Section title="Respaldos y restauración">
           <div className="maintenance-stack">
             <p className="hint">
-              Respaldos de calibración y mapeo guardados localmente
+              Copia local de la configuración del mouse
               {ctl.backup?.path ? <> en <code>{ctl.backup.path}</code></> : null}.
             </p>
             <div className="maintenance-actions">
               <button type="button" className="btn ghost" onClick={() => api.openBackups()}>
                 <Icon name="copy" size={14} />
-                <span>Abrir carpeta de respaldos</span>
+                <span>Abrir carpeta</span>
               </button>
               <button type="button" className="btn danger" onClick={() => setConfirm(true)}>
                 <Icon name="refresh" size={14} />
-                <span>Restaurar de fábrica</span>
+                <span>Valores de fábrica</span>
               </button>
             </div>
           </div>

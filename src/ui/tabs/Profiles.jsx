@@ -26,7 +26,7 @@ function Rules({ ctl }) {
     <div className="rules-container">
       <Field
         label="Perfil predeterminado"
-        hint="Asignado automáticamente cuando la aplicación activa no coincide con ninguna regla."
+        hint="Se usa cuando ninguna regla coincide con la aplicación activa."
       >
         <select
           className="select"
@@ -44,9 +44,9 @@ function Rules({ ctl }) {
       <table className="events rules-table">
         <thead>
           <tr>
-            <th>Proceso ejecutable</th>
-            <th>Perfil asociado</th>
-            <th className="text-right">Acción</th>
+            <th>Ejecutable</th>
+            <th>Perfil</th>
+            <th />
           </tr>
         </thead>
         <tbody>
@@ -69,7 +69,7 @@ function Rules({ ctl }) {
           {!rules.length && (
             <tr>
               <td colSpan={3} className="hint text-center py-4">
-                No hay reglas configuradas. Añade una regla con el ejecutable del juego o programa.
+                Sin reglas. Agrega el ejecutable de un juego o programa.
               </td>
             </tr>
           )}
@@ -116,9 +116,8 @@ export default function Profiles({ ctl }) {
   return (
     <div className="tab-layout">
       <Section
-        title="Gestión de perfiles"
-        badge="MEMORIA & CONFIGURACIÓN"
-        hint="Cada perfil almacena DPI, tasa de sondeo, iluminación y mapeo de botones."
+        title="Perfiles"
+        hint="Cada perfil guarda DPI, sondeo, iluminación y botones."
         actions={
           <div className="profile-header-actions">
             <button className="btn ghost" onClick={ctl.importProfileFile}>
@@ -132,7 +131,7 @@ export default function Profiles({ ctl }) {
         }
       >
         <div className="profiles-grid">
-          {store.profiles.map((p, idx) => {
+          {store.profiles.map((p) => {
             const active = p.id === store.activeProfileId;
             const activeDpi = p.config.dpi[p.config.dpi_index] || 1600;
             const pollingHz = p.config.report_rate === 3 ? 1000 : p.config.report_rate === 2 ? 500 : p.config.report_rate === 1 ? 250 : 125;
@@ -143,7 +142,6 @@ export default function Profiles({ ctl }) {
                 <div className="profile-card-header">
                   <div className="profile-card-title-group">
                     <span className="profile-card-name">{p.name}</span>
-                    <span className="profile-card-slot">Slot HW #{idx + 1}</span>
                   </div>
                   {active ? (
                     <span className="profile-badge active">
@@ -161,10 +159,9 @@ export default function Profiles({ ctl }) {
                   )}
                 </div>
 
-                {/* Telemetry Chips Grid */}
                 <div className="profile-spec-chips">
                   <div className="spec-box">
-                    <span className="spec-box-label">DPI BASE</span>
+                    <span className="spec-box-label">DPI</span>
                     <span className="spec-box-val">{activeDpi}</span>
                   </div>
                   <div className="spec-box">
@@ -177,11 +174,10 @@ export default function Profiles({ ctl }) {
                   </div>
                 </div>
 
-                {/* DPI Stages Micro Visualizer */}
                 <div className="profile-stages-micro">
                   <div className="micro-stages-label">
-                    <span>Etapas activas</span>
-                    <span>{p.config.dpi_count} niveles</span>
+                    <span>Niveles</span>
+                    <span>{p.config.dpi_count}</span>
                   </div>
                   <div className="micro-stages-bar">
                     {[0, 1, 2, 3, 4, 5].slice(0, p.config.dpi_count).map((stageIdx) => (
@@ -234,15 +230,14 @@ export default function Profiles({ ctl }) {
 
       <Section
         title="Cambio automático por aplicación"
-        badge="PROCESO EN PRIMER PLANO"
         hint={
           inElectron
-            ? "Conmuta perfiles según el ejecutable detectado en Windows."
+            ? "Cambia de perfil según la aplicación en primer plano."
             : "Disponible únicamente en la versión instalada de escritorio."
         }
       >
         <Toggle
-          label="Activar conmutación automática de perfiles"
+          label="Cambiar de perfil automáticamente"
           disabled={!inElectron}
           checked={store.autoSwitch.enabled}
           onChange={(enabled) => ctl.setAutoSwitch({ enabled })}

@@ -99,12 +99,8 @@ function Editor({ index, action, macros, onApply, onSelectButton }) {
                 className={`choice command-item ${active ? "active" : ""}`}
                 onClick={() => pick(m.action)}
               >
-                <div className="command-item-icon">
-                  <Icon name="mouse" size={15} />
-                </div>
                 <div className="command-item-text">
                   <span className="command-name">{m.label}</span>
-                  <span className="command-sub">Acción de hardware</span>
                 </div>
                 {active && <span className="active-dot" />}
               </button>
@@ -124,12 +120,8 @@ function Editor({ index, action, macros, onApply, onSelectButton }) {
                 className={`choice command-item ${active ? "active" : ""}`}
                 onClick={() => pick(m.action)}
               >
-                <div className="command-item-icon">
-                  <Icon name="sparkles" size={15} />
-                </div>
                 <div className="command-item-text">
                   <span className="command-name">{m.label}</span>
-                  <span className="command-sub">Control multimedia</span>
                 </div>
                 {active && <span className="active-dot" />}
               </button>
@@ -264,12 +256,11 @@ export default function Buttons({ ctl }) {
     <div className="tab-layout">
       <Section
         title="Asignación de botones"
-        badge="HARDWARE REMAP"
-        hint="Haz clic en cualquier botón del mouse para reasignar su función de hardware."
+        hint="Selecciona un botón del mouse para cambiar su función."
         actions={
           <button className="btn ghost" onClick={() => setConfirmReset(true)}>
             <Icon name="refresh" size={13} />
-            <span>Restablecer fábrica</span>
+            <span>Valores de fábrica</span>
           </button>
         }
       >

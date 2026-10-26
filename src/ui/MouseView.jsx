@@ -102,15 +102,14 @@ export default function MouseView({
     <div className="mouse-view-card">
       <div className="mouse-view-header">
         <div className="mouse-view-title-wrap">
-          <span className="section-badge">AJ139 V2 MC</span>
-          <span className="mouse-view-model-label">Diagrama de hardware</span>
+          <span className="mouse-view-model-label">AJ139 V2 MC</span>
         </div>
         <div className="mouse-view-toggle">
           <button
             type="button"
             className={`view-toggle-btn ${viewMode === "buttons" ? "active" : ""}`}
             onClick={() => setViewMode("buttons")}
-            title="Mapeo de botones"
+            title="Ver la asignación de cada botón"
           >
             Asignación
           </button>
@@ -118,7 +117,7 @@ export default function MouseView({
             type="button"
             className={`view-toggle-btn ${viewMode === "clean" ? "active" : ""}`}
             onClick={() => setViewMode("clean")}
-            title="Vista 3D"
+            title="Ver el mouse sin etiquetas"
           >
             Vista limpia
           </button>

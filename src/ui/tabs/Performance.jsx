@@ -7,6 +7,15 @@ const DPI_MAX = 24000;
 const DPI_STEP = 50;
 const LEVEL_COLORS = ["#ff4d4d", "#00f5a0", "#00d2ff", "#2fd9d9", "#ffd23f", "#b36bff"];
 const QUICK_PRESETS = [400, 800, 1200, 1600, 2400, 3200, 6400];
+const TICKS = [800, 1600, 3200, 6400, 12800, 24000];
+
+// Escala cuadrática: da más resolución al rango habitual (400–3200 DPI).
+const toPct = (dpi) => Math.sqrt((dpi - DPI_MIN) / (DPI_MAX - DPI_MIN)) * 100;
+const fromPct = (pct) => {
+  const raw = DPI_MIN + (DPI_MAX - DPI_MIN) * (pct / 100) ** 2;
+  return Math.min(DPI_MAX, Math.max(DPI_MIN, Math.round(raw / DPI_STEP) * DPI_STEP));
+};
+const clampDpi = (n) => Math.min(DPI_MAX, Math.max(DPI_MIN, n));
 
 export default function Performance({ ctl }) {
   const { config, info } = ctl;
@@ -15,16 +24,17 @@ export default function Performance({ ctl }) {
   const activeIndex = config.dpi_index;
   const activeDpi = config.dpi[activeIndex] || 1600;
 
-  const [scrubberDraft, setScrubberDraft] = useState(activeDpi);
+  const [draft, setDraft] = useState(activeDpi);
   useEffect(() => {
-    setScrubberDraft(activeDpi);
-  }, [activeDpi]);
+    setDraft(activeDpi);
+  }, [activeDpi, activeIndex]);
 
   const setDpi = (index, value) => {
     const dpi = [...config.dpi];
     dpi[index] = value;
     ctl.applyConfig({ dpi });
   };
+  const commitDraft = () => draft !== activeDpi && setDpi(activeIndex, draft);
 
   const setCount = (count) => {
     ctl.applyConfig({
@@ -39,23 +49,23 @@ export default function Performance({ ctl }) {
     });
   };
 
-  const activeProgress = Math.min(
-    100,
-    Math.max(0, (config.dpi_count <= 1 ? 0 : activeIndex / (config.dpi_count - 1)) * 100)
-  );
+  const onSliderKey = (e) => {
+    const dir = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }[e.key];
+    if (!dir) return;
+    e.preventDefault();
+    setDraft((d) => clampDpi(d + dir * DPI_STEP * (e.shiftKey ? 10 : 1)));
+  };
+
+  const pct = toPct(draft);
+  const color = LEVEL_COLORS[activeIndex];
 
   return (
     <div className="tab-layout">
-      {/* Hero DPI Calibration Showcase */}
-      <div className="dpi-hero-panel">
-        <div className="dpi-hero-top">
-          <div className="dpi-hero-meta">
-            <span className="section-badge">PIXART PAW3395</span>
-            <h1 className="dpi-hero-title">Sensibilidad (DPI)</h1>
-            <p className="dpi-hero-subtitle">Calibración óptica en incrementos de 50 DPI.</p>
-          </div>
+      <div className="dpi-panel" style={{ "--level-color": color }}>
+        <div className="dpi-head">
+          <h1>Sensibilidad (DPI)</h1>
           <div className="dpi-levels-selector">
-            <span className="meta-label">Etapas activas</span>
+            <span className="meta-label">Niveles</span>
             <Segmented
               options={[1, 2, 3, 4, 5, 6].map((n) => ({ value: n, label: String(n) }))}
               value={config.dpi_count}
@@ -64,103 +74,93 @@ export default function Performance({ ctl }) {
           </div>
         </div>
 
-        {/* Big Telemetry Display */}
-        <div className="dpi-hero-center">
-          <span className="dpi-stage-tag">NIVEL {activeIndex + 1} ACTIVO</span>
-          <div className="dpi-big-number-row">
-            <span className="dpi-big-number">{activeDpi}</span>
-            <span className="dpi-big-unit">DPI</span>
-          </div>
-
-          {/* Quick Presets Bar */}
-          <div className="dpi-preset-chips">
-            {QUICK_PRESETS.map((p) => (
+        <div className="dpi-levels" style={{ "--cols": config.dpi_count }}>
+          {config.dpi.slice(0, config.dpi_count).map((v, i) => {
+            const active = i === activeIndex;
+            const shown = active ? draft : v;
+            return (
               <button
-                key={p}
+                key={i}
                 type="button"
-                className={`quick-chip ${activeDpi === p ? "active" : ""}`}
-                onClick={() => setDpi(activeIndex, p)}
+                className={`dpi-level-card ${active ? "active" : ""}`}
+                style={{ "--level-color": LEVEL_COLORS[i] }}
+                aria-pressed={active}
+                onClick={() => !active && ctl.applyConfig({ dpi_index: i })}
               >
-                {p}
+                <span className="dpi-level-name">
+                  <span className="dpi-level-dot" />
+                  Nivel {i + 1}
+                </span>
+                <span className="dpi-level-value">{shown}</span>
+                <span className="dpi-level-bar">
+                  <span style={{ width: `${toPct(shown)}%` }} />
+                </span>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {/* Stage Node Rail (Stitch G-Hub Style) */}
-        <div className="dpi-rail-container">
-          <div className="dpi-rail-bg" />
-          <div className="dpi-rail-fill" style={{ width: `${activeProgress}%` }} />
-          <div className="dpi-nodes-row">
-            {config.dpi.slice(0, config.dpi_count).map((v, i) => {
-              const isActive = i === activeIndex;
-              return (
-                <div
-                  key={i}
-                  className={`dpi-level dpi-node ${isActive ? "active" : ""}`}
-                  onClick={() => ctl.applyConfig({ dpi_index: i })}
-                  title={`Seleccionar Nivel ${i + 1} (${v} DPI)`}
+        <div className="dpi-editor">
+          <div className="dpi-editor-top">
+            <div className="dpi-readout">
+              <span className="dpi-readout-label">Editando nivel {activeIndex + 1}</span>
+              <div className="dpi-readout-row">
+                <NumberInput
+                  value={draft}
+                  min={DPI_MIN}
+                  max={DPI_MAX}
+                  step={DPI_STEP}
+                  className="dpi-big-input"
+                  onCommit={(n) => {
+                    setDraft(n);
+                    setDpi(activeIndex, n);
+                  }}
+                />
+                <span className="dpi-big-unit">DPI</span>
+              </div>
+            </div>
+            <div className="dpi-preset-chips">
+              {QUICK_PRESETS.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={`quick-chip ${activeDpi === p ? "active" : ""}`}
+                  onClick={() => setDpi(activeIndex, p)}
                 >
-                  <span className="dpi-node-val">{v}</span>
-                  <div className="dpi-node-disc" style={{ "--dot-color": LEVEL_COLORS[i] }}>
-                    <span className="dpi-node-core" />
-                  </div>
-                  <div className="dpi-select">
-                    <span>Nivel {i + 1}</span>
-                    {isActive && <span className="badge">Activo</span>}
-                  </div>
-                  <div className="sr-only-input">
-                    <NumberInput
-                      value={v}
-                      min={DPI_MIN}
-                      max={DPI_MAX}
-                      step={DPI_STEP}
-                      onCommit={(nv) => setDpi(i, nv)}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+                  {p}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Fine Scrubber Control */}
-        <div className="dpi-scrubber-bar">
-          <span className="scrubber-bound">50</span>
-          <div className="scrubber-slider-wrap">
+          <div className="dpi-slider-wrap">
             <input
               type="range"
               className="dpi-slider"
-              min={DPI_MIN}
-              max={DPI_MAX}
-              step={DPI_STEP}
-              value={scrubberDraft}
-              onChange={(e) => setScrubberDraft(Number(e.target.value))}
-              onPointerUp={() => scrubberDraft !== activeDpi && setDpi(activeIndex, scrubberDraft)}
-              onKeyUp={() => scrubberDraft !== activeDpi && setDpi(activeIndex, scrubberDraft)}
+              aria-label={`DPI del nivel ${activeIndex + 1}`}
+              min={0}
+              max={100}
+              step={0.1}
+              value={pct}
+              style={{ "--pct": `${pct}%` }}
+              onChange={(e) => setDraft(fromPct(Number(e.target.value)))}
+              onKeyDown={onSliderKey}
+              onPointerUp={commitDraft}
+              onKeyUp={commitDraft}
             />
-          </div>
-          <span className="scrubber-bound">24000</span>
-          <div className="scrubber-input-wrap">
-            <NumberInput
-              value={activeDpi}
-              min={DPI_MIN}
-              max={DPI_MAX}
-              step={DPI_STEP}
-              className="short"
-              onCommit={(nv) => setDpi(activeIndex, nv)}
-            />
-            <span className="unit-label">DPI</span>
+            <div className="dpi-ticks" aria-hidden="true">
+              {TICKS.map((t) => (
+                <span key={t} style={{ left: `${toPct(t)}%` }}>{t}</span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Bento Grid: Polling, LOD, Sensor */}
       <div className="bento-grid">
         <Section
           title="Tasa de sondeo"
-          badge="TIEMPO DE RESPUESTA"
-          hint={usb ? "1000 Hz fijado por hardware bajo conexión USB-C directa." : "Frecuencia de muestreo del sensor hacia el sistema."}
+          hint={usb ? "Por cable USB el mouse trabaja siempre a 1000 Hz." : "Cuántas veces por segundo el mouse reporta su posición al PC."}
         >
           <Segmented
             options={REPORT_RATES.map((r) => {
@@ -178,26 +178,20 @@ export default function Performance({ ctl }) {
 
         <div className="bento-columns">
           <Section
-            title="Distancia de elevación (LOD)"
-            badge="SENSOR LIFT-OFF"
-            hint="Corte óptico al levantar el mouse de la superficie."
+            title="Distancia de despegue (LOD)"
+            hint="Altura a la que el sensor deja de registrar al levantar el mouse."
           >
             <Segmented
               options={LOD_OPTIONS.map((o) => ({
                 ...o,
                 label: o.value === 1 ? "Baja (1 mm)" : "Alta (2 mm)",
-                title: o.value === 1 ? "Modo competitivo FPS" : "Superficies irregulares o tela gruesa",
               }))}
               value={config.lod_value}
               onChange={(v) => ctl.applyConfig({ lod_value: v })}
             />
           </Section>
 
-          <Section
-            title="Calibración avanzada"
-            badge="PIXART DSP"
-            hint="Ajustes de sincronización y estabilización de datos."
-          >
+          <Section title="Sensor">
             <div className="toggle-group">
               {SENSOR_BITS.map((s) => (
                 <Toggle

@@ -136,7 +136,7 @@ export default function Macros({ ctl }) {
   return (
     <Section
       title="Macros"
-      hint="Las macros se guardan en el PC y se escriben todas juntas en la memoria del mouse. Luego asígnalas a un botón."
+      hint="Se guardan en el PC y se escriben juntas en el mouse. Luego asígnalas a un botón."
       icon="macro"
       actions={<>
         <div className="memory-meter" title={`Memoria de macros en mouse: ${used} / ${MACRO_BYTES} bytes (${usedPct}%)`}>

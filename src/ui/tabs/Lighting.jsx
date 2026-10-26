@@ -1,4 +1,4 @@
-import { Section, Icon } from "../components.jsx";
+import { Section } from "../components.jsx";
 import { LIGHT_EFFECTS } from "../../catalog.js";
 
 export default function Lighting({ ctl }) {
@@ -8,32 +8,11 @@ export default function Lighting({ ctl }) {
     <div className="tab-layout">
       <Section
         title="Iluminación"
-        badge="RGB CONTROLLER"
-        hint="Efectos de hardware almacenados en la memoria interna del mouse."
-        actions={
-          <span className="pill">
-            <Icon name="sparkles" size={13} />
-            <span>7 Modos disponibles</span>
-          </span>
-        }
       >
         <div className="lighting-bento-layout">
           {/* Left: Dynamic Hardware Lighting Simulation Showcase */}
           <div className="lighting-stage-card">
             <div className={`lighting-ambient-glow fx-glow-${mode}`} />
-
-            <div className="lighting-stage-header">
-              <div className="stage-title-wrap">
-                <span className="stage-icon">
-                  <Icon name="sparkles" size={14} />
-                </span>
-                <span className="stage-title">Previsualización en vivo</span>
-              </div>
-              <span className="sync-chip">
-                <Icon name="check" size={12} />
-                <span>Hardware Sync</span>
-              </span>
-            </div>
 
             {/* Vectorial Silhouette of Mouse + Charging Dock */}
             <div className="lighting-vector-stage">
@@ -122,13 +101,11 @@ export default function Lighting({ ctl }) {
               <span className="active-effect-title">
                 {LIGHT_EFFECTS.find((e) => e.value === mode)?.label || "Efecto activo"}
               </span>
-              <span className="active-effect-mode">Modo HW {mode}</span>
             </div>
           </div>
 
           {/* Right: Lighting Presets Selection Grid */}
           <div className="lighting-presets-column">
-            <div className="lighting-presets-title">Efectos configurables</div>
             <div className="lighting-cards-grid">
               {LIGHT_EFFECTS.map((e) => {
                 const active = mode === e.value;

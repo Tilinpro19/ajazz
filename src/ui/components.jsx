@@ -333,19 +333,11 @@ export function CircularBatteryGauge({ level, charging }) {
         </svg>
         <div className="battery-gauge-center">
           <span className="battery-gauge-percent">{safeLevel}%</span>
-          <span className="battery-gauge-chem">Li-Ion</span>
         </div>
       </div>
       <div className="battery-gauge-telemetry">
-        <div className="battery-gauge-status">
-          <span className="battery-gauge-title">Autonomía</span>
-          <span className="battery-gauge-value">{charging ? "Cargando vía USB-C" : "~45 Horas (1000 Hz)"}</span>
-        </div>
-        <div className="battery-spec-chips">
-          <span className="spec-chip">300 mAh</span>
-          <span className="spec-chip">3.7V</span>
-          {charging && <span className="spec-chip active">Carga activa</span>}
-        </div>
+        <span className="battery-gauge-title">Batería</span>
+        <span className="battery-gauge-value">{charging ? "Cargando" : "En uso"}</span>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useController } from "./useController.js";
 import { Icon, Battery, Toasts, ActionButton } from "./components.jsx";
 import { inElectron } from "./api.js";
@@ -27,6 +27,8 @@ const TABS = [
   { id: "settings", label: "Ajustes", iconComponent: SettingsIcon, view: Settings, needsMouse: true },
   { id: "profiles", label: "Perfiles", iconComponent: Users, view: Profiles, needsMouse: false },
 ];
+
+const LEAVE_MS = 120;
 
 function NavTabButton({ tab, active, onSelect }) {
   const { ref, triggerProps } = useIconHover({ trigger: "both" });
@@ -128,7 +130,7 @@ function Waiting({ ctl }) {
     return (
       <div className="empty">
         <span className="spinner big" />
-        <h2>Sincronizando telemetría de hardware…</h2>
+        <h2>Leyendo la configuración del mouse…</h2>
       </div>
     );
   }
@@ -141,8 +143,8 @@ function Waiting({ ctl }) {
       {conn.error && <p className="error-text">{conn.error.message}</p>}
       <ul className="tips">
         <li>Conecta el mouse por cable USB o inserta el dongle receptor 2.4G.</li>
-        <li>Cierra otras utilidades o pestañas web del fabricante para evitar conflicto de interfaz.</li>
-        {!inElectron && <li>Concede permisos de acceso WebHID mediante el botón inferior.</li>}
+        <li>Cierra el software o la web del fabricante: solo una aplicación puede usar el mouse a la vez.</li>
+        {!inElectron && <li>Pulsa el botón de abajo y concede el permiso WebHID.</li>}
       </ul>
       <ActionButton icon={RefreshCw} className="btn primary" onClick={ctl.requestDevice}>
         Detectar dispositivo
@@ -153,37 +155,66 @@ function Waiting({ ctl }) {
 
 export default function App() {
   const ctl = useController();
+  // `target` mueve la barra lateral al instante; `tab` es la vista montada y se
+  // cambia tras la animación de salida.
+  const [target, setTarget] = useState("performance");
   const [tab, setTab] = useState("performance");
+  const [dir, setDir] = useState(1);
+  const [leaving, setLeaving] = useState(false);
+  const navRef = useRef(null);
+  const [marker, setMarker] = useState(null);
+  const timer = useRef(0);
   const current = TABS.find((t) => t.id === tab);
   const ready = Boolean(ctl.config && ctl.buttons);
   const View = current.view;
+
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  useLayoutEffect(() => {
+    const el = navRef.current?.querySelector(".nav.active");
+    if (el) setMarker({ top: el.offsetTop, height: el.offsetHeight });
+  }, [target]);
+
+  const select = (id) => {
+    if (id === target) return;
+    const order = (x) => TABS.findIndex((t) => t.id === x);
+    setDir(order(id) > order(target) ? 1 : -1);
+    setTarget(id);
+    setLeaving(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      setTab(id);
+      setLeaving(false);
+    }, LEAVE_MS);
+  };
 
   return (
     <div className="app">
       <Header ctl={ctl} />
       <div className="body">
         <aside className="sidebar">
-          <div className="sidebar-group-title">DISPOSITIVO ACTIVO</div>
-          <nav className="sidebar-nav">
+          <nav className="sidebar-nav" ref={navRef}>
+            {marker && (
+              <span
+                className="nav-marker"
+                style={{ transform: `translateY(${marker.top}px)`, height: marker.height }}
+              />
+            )}
             {TABS.map((t) => (
               <NavTabButton
                 key={t.id}
                 tab={t}
-                active={t.id === tab}
-                onSelect={() => setTab(t.id)}
+                active={t.id === target}
+                onSelect={() => select(t.id)}
               />
             ))}
           </nav>
-          <div className="sidebar-foot">
-            <span className="telemetry-pill">
-              <span className="telemetry-dot" />
-              <span>PAW3395 · 1000 Hz</span>
-            </span>
-          </div>
         </aside>
         <main className="content">
           <div className="content-container">
-            {current.needsMouse && !ready ? <Waiting ctl={ctl} /> : <View ctl={ctl} />}
+            <div key={tab} className={`tab-view ${leaving ? "leaving" : ""}`} data-dir={dir}>
+              {current.needsMouse && !ready ? <Waiting ctl={ctl} /> : <View ctl={ctl} />}
+            </div>
           </div>
         </main>
       </div>
