@@ -17,14 +17,12 @@
     "icon": "node scripts/make-icon.js",
     "dist": "vite build && electron-builder --win nsis"
   },
-  "dependencies": {
-    "@animateicons/react": "^0.12.1",
-    "motion": "^14.6.0"
-  },
   "devDependencies": {
+    "@animateicons/react": "^0.12.1",
     "@vitejs/plugin-react": "^4.7.0",
     "electron": "^33.4.11",
     "electron-builder": "^25.1.8",
+    "motion": "^14.6.0",
     "node-hid": "^3.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -37,6 +35,10 @@
   "build": {
     "appId": "com.thiago.ajazz-aj139-control",
     "productName": "AJAZZ AJ139 Control",
+    "electronLanguages": [
+      "es",
+      "en-US"
+    ],
     "directories": {
       "output": "release",
       "buildResources": "build"
