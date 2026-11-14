@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"outline":"#849588","on-secondary":"#003543","tertiary":"#fff0f0","secondary-fixed-dim":"#47d6ff","on-surface":"#dfe2ee","surface-variant":"#31353e","secondary-container":"#00d2ff","inverse-on-surface":"#2c3039","on-tertiary-fixed-variant":"#910030","error":"#ffb4ab","tertiary-fixed-dim":"#ffb2ba","on-tertiary":"#670020","on-tertiary-container":"#bb0041","surface-dim":"#0f131c","on-error-container":"#ffdad6","secondary":"#a5e7ff","on-secondary-fixed-variant":"#004e60","inverse-surface":"#dfe2ee","on-primary-container":"#006b43","on-primary-fixed-variant":"#005232","surface":"#0f131c","on-primary-fixed":"#002111","surface-container-lowest":"#0a0e16","on-secondary-container":"#00566a","tertiary-fixed":"#ffd9dc","background":"#0f131c","surface-container":"#1c2028","on-error":"#690005","on-background":"#dfe2ee","inverse-primary":"#006c44","primary":"#cdffde","outline-variant":"#3b4a40","primary-fixed-dim":"#00e293","on-tertiary-fixed":"#400011","surface-container-highest":"#31353e","primary-container":"#00f5a0","surface-bright":"#353942","on-surface-variant":"#b9cbbd","on-secondary-fixed":"#001f28","primary-fixed":"#50ffaf","surface-container-low":"#181c24","tertiary-container":"#ffcace","error-container":"#93000a","secondary-fixed":"#b6ebff","surface-container-high":"#262a33","surface-tint":"#00e293","on-primary":"#003921"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-xl":"2rem","space-md":"0.75rem","gutter":"0.75rem","margin":"1rem","space-xs":"0.25rem","space-sm":"0.5rem","space-lg":"1.25rem"},"fontFamily":{"headline-xl":["Geist"],"label-lg":["JetBrains Mono"],"headline-sm":["Geist"],"headline-md":["Geist"],"headline-lg":["Geist"],"body-lg":["Geist"],"label-sm":["JetBrains Mono"],"body-md":["Geist"],"label-md":["JetBrains Mono"],"body-sm":["Geist"]},"fontSize":{"headline-xl":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-lg":["13px",{"lineHeight":"18px","letterSpacing":"0.02em","fontWeight":"500"}],"headline-sm":["15px",{"lineHeight":"22px","letterSpacing":"0","fontWeight":"500"}],"headline-md":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-lg":["15px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"400"}],"label-sm":["9px",{"lineHeight":"12px","letterSpacing":"0.08em","fontWeight":"600"}],"body-md":["13px",{"lineHeight":"20px","letterSpacing":"0","fontWeight":"400"}],"label-md":["11px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"500"}],"body-sm":["11px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"400"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface select-none antialiased"><header class="fixed top-0 left-0 right-0 h-14 z-50 bg-surface-container-lowest/90 backdrop-blur-md px-space-md flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm pl-space-xs"><span class="material-symbols-outlined text-primary-container text-[20px]">hexagon</span><span class="font-headline-sm text-headline-sm tracking-wider uppercase text-on-surface font-semibold">HEX SUITE</span></div><div class="h-4 w-[1px] bg-surface-variant"></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded cursor-pointer hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-secondary text-[16px]">mouse</span><span class="font-label-md text-label-md text-on-surface">AJ139 V2</span><div class="flex items-center gap-1 ml-space-xs px-1.5 py-0.5 rounded-full bg-surface-container-highest"><span class="material-symbols-outlined text-primary-container text-[12px]">battery_charging_full</span><span class="font-label-sm text-label-sm text-primary">81%</span></div><span class="material-symbols-outlined text-on-surface-variant text-[14px]">expand_more</span></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded cursor-pointer hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-on-surface-variant text-[14px]">tune</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Perfil:</span><span class="font-label-md text-label-md text-on-surface">Predeterminado</span><span class="material-symbols-outlined text-on-surface-variant text-[14px]">unfold_more</span></div></div><div class="flex items-center gap-space-md"><button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors" title="Ajustes Generales" type="button"><span class="material-symbols-outlined text-[18px]">settings</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="h-4 w-[1px] bg-surface-variant ml-space-xs"></div><div class="flex items-center gap-1 text-on-surface-variant"><button class="w-7 h-7 flex items-center justify-center hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" title="Minimizar" type="button"><span class="material-symbols-outlined text-[14px]">minimize</span></button><button class="w-7 h-7 flex items-center justify-center hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" title="Maximizar" type="button"><span class="material-symbols-outlined text-[14px]">check_box_outline_blank</span></button><button class="w-7 h-7 flex items-center justify-center hover:bg-error-container hover:text-error rounded transition-colors" title="Cerrar" type="button"><span class="material-symbols-outlined text-[14px]">close</span></button></div></div></header><aside class="fixed left-0 top-14 bottom-0 w-56 bg-surface-container-lowest/80 backdrop-blur-md z-40 flex flex-col justify-between py-space-md px-space-sm shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-space-xs"><div class="px-space-sm pb-space-xs"><span class="font-label-sm text-label-sm uppercase text-outline">Dispositivo Activo</span></div><nav class="flex flex-col gap-1" data-active-classes="bg-surface-container-high text-primary-container font-semibold"><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2 rounded transition-all bg-surface-container-high text-primary-container font-semibold" data-path="rendimiento" href="#"><span class="material-symbols-outlined text-[18px]">speed</span><span class="font-body-md text-body-md">Rendimiento</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="botones" href="#"><span class="material-symbols-outlined text-[18px]">ads_click</span><span class="font-body-md text-body-md">Botones</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="iluminacion" href="#"><span class="material-symbols-outlined text-[18px]">flare</span><span class="font-body-md text-body-md">Iluminación</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="ajustes" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">Ajustes</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="perfiles" href="#"><span class="material-symbols-outlined text-[18px]">folder_shared</span><span class="font-body-md text-body-md">Perfiles</span></a></nav></div><div class="px-space-sm pt-space-sm flex items-center justify-between"><div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></div><span class="font-label-sm text-label-sm text-on-surface-variant">2.4G PAW3395</span></div><span class="font-label-sm text-label-sm text-outline px-1.5 py-0.5 rounded bg-surface-container-low">v2.2</span></div></aside><div class="pl-56"><main class="w-full pt-14 px-space-lg pb-space-xl bg-background min-h-screen"><div class="flex flex-col w-full max-w-6xl mx-auto space-y-space-lg select-none">
+<!-- Header Telemetry Strip -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md pb-space-sm border-b border-surface-variant/40">
+<div>
+<div class="flex items-center gap-space-xs text-primary-container mb-1">
+<span class="material-symbols-outlined text-[18px]">speed</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-fixed-dim">Sensor PAW3395 Calibrado</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Sensibilidad (DPI)</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Ajusta la resolución de rastreo óptico del sensor en incrementos de 50 DPI.</p>
+</div>
+<!-- Active Profile & Hardware Quick Status -->
+<div class="flex items-center gap-space-sm bg-surface-container-low px-space-md py-space-sm rounded-lg border border-surface-variant/30 backdrop-blur-sm self-start md:self-auto">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Modo de Energía</span>
+<span class="font-label-md text-label-md text-on-surface flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          Ultra-Low Latency
+        </span>
+</div>
+<div class="h-6 w-[1px] bg-surface-variant/60 mx-1"></div>
+<button class="flex items-center gap-1 font-label-md text-label-md text-on-surface-variant hover:text-primary-container transition-colors py-1 px-2 rounded hover:bg-surface-container" id="reset-defaults-btn">
+<span class="material-symbols-outlined text-[15px]">refresh</span>
+<span>Reestablecer</span>
+</button>
+</div>
+</div>
+<!-- Primary G-HUB Style Interactive Canvas -->
+<div class="relative bg-surface-container-low/60 rounded-xl p-space-xl border border-surface-variant/30 backdrop-blur-md overflow-hidden shadow-2xl">
+<!-- Ambient Center Light Cone -->
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary-container/5 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Big Typographic Display for Active DPI -->
+<div class="relative flex flex-col items-center justify-center pt-space-md pb-space-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-[0.25em] text-outline mb-2">Nivel 4 Asignado</span>
+<div class="flex items-baseline gap-space-xs transition-all duration-200">
+<span class="font-headline-xl text-5xl md:text-7xl font-bold tracking-tighter text-on-surface drop-shadow-sm" id="active-dpi-number">1600</span>
+<span class="font-headline-md text-headline-md uppercase tracking-wider text-primary-fixed-dim font-medium">DPI</span>
+</div>
+<!-- Quick Preset Chips -->
+<div class="flex flex-wrap items-center justify-center gap-1.5 mt-space-md max-w-xl">
+<button class="quick-chip px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-all border border-surface-variant/20" data-quick-dpi="400">400</button>
+<button class="quick-chip px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-all border border-surface-variant/20" data-quick-dpi="800">800</button>
+<button class="quick-chip px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-all border border-surface-variant/20" data-quick-dpi="1200">1200</button>
+<button class="quick-chip px-2.5 py-1 rounded bg-primary-container/20 text-primary-container font-label-sm text-label-sm transition-all border border-primary-container/40" data-quick-dpi="1600">1600</button>
+<button class="quick-chip px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-all border border-surface-variant/20" data-quick-dpi="2400">2400</button>
+<button class="quick-chip px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-all border border-surface-variant/20" data-quick-dpi="3200">3200</button>
+<button class="quick-chip px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-all border border-surface-variant/20" data-quick-dpi="6400">6400</button>
+</div>
+</div>
+<!-- Continuous Linear Track with Stepped Nodes (G HUB Style) -->
+<div class="relative w-full max-w-4xl mx-auto px-6 py-space-lg mb-space-sm">
+<!-- Background Guide Rail -->
+<div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-surface-variant/60 rounded-full"></div>
+<!-- Highlighted Active Progression Line -->
+<div class="absolute left-6 top-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-secondary-container to-primary-container rounded-full pointer-events-none transition-all duration-300" id="slider-progress" style="width: 58%;"></div>
+<!-- Nodes Layout -->
+<div class="relative flex items-center justify-between w-full">
+<!-- Node 1 -->
+<div class="dpi-node flex flex-col items-center group cursor-pointer" data-dpi="400" data-step="1">
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface mb-3 transition-colors">400</span>
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-surface-variant group-hover:border-on-surface transition-all">
+<div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+</div>
+<span class="font-label-sm text-[9px] uppercase tracking-wider text-outline mt-2.5">Etapa 1</span>
+</div>
+<!-- Node 2 -->
+<div class="dpi-node flex flex-col items-center group cursor-pointer" data-dpi="800" data-step="2">
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface mb-3 transition-colors">800</span>
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-surface-variant group-hover:border-on-surface transition-all">
+<div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+</div>
+<span class="font-label-sm text-[9px] uppercase tracking-wider text-outline mt-2.5">Etapa 2</span>
+</div>
+<!-- Node 3 -->
+<div class="dpi-node flex flex-col items-center group cursor-pointer" data-dpi="1200" data-step="3">
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface mb-3 transition-colors">1200</span>
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-surface-variant group-hover:border-on-surface transition-all">
+<div class="w-2.5 h-2.5 rounded-full bg-sky-400"></div>
+</div>
+<span class="font-label-sm text-[9px] uppercase tracking-wider text-outline mt-2.5">Etapa 3</span>
+</div>
+<!-- Node 4 (ACTIVE) -->
+<div class="dpi-node flex flex-col items-center group cursor-pointer active-node" data-dpi="1600" data-step="4">
+<div class="absolute -top-7 px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm font-semibold tracking-wide shadow-lg">ACTIVO</div>
+<span class="font-label-md text-label-md text-primary-container font-bold mb-3">1600</span>
+<div class="w-7 h-7 -my-0.5 rounded-full bg-surface-container-lowest flex items-center justify-center border-2 border-primary-container shadow-[0_0_12px_rgba(0,245,160,0.45)] transition-all transform scale-110">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+</div>
+<span class="font-label-sm text-[9px] uppercase tracking-wider text-primary-container font-semibold mt-2.5">Etapa 4</span>
+</div>
+<!-- Node 5 -->
+<div class="dpi-node flex flex-col items-center group cursor-pointer" data-dpi="2400" data-step="5">
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface mb-3 transition-colors">2400</span>
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-surface-variant group-hover:border-on-surface transition-all">
+<div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+</div>
+<span class="font-label-sm text-[9px] uppercase tracking-wider text-outline mt-2.5">Etapa 5</span>
+</div>
+<!-- Node 6 -->
+<div class="dpi-node flex flex-col items-center group cursor-pointer" data-dpi="3200" data-step="6">
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface mb-3 transition-colors">3200</span>
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-surface-variant group-hover:border-on-surface transition-all">
+<div class="w-2.5 h-2.5 rounded-full bg-purple-400"></div>
+</div>
+<span class="font-label-sm text-[9px] uppercase tracking-wider text-outline mt-2.5">Etapa 6</span>
+</div>
+</div>
+</div>
+<!-- Fine Scrubber Slider -->
+<div class="max-w-xl mx-auto flex items-center gap-space-md pt-space-xs text-on-surface-variant">
+<span class="font-label-sm text-label-sm text-outline">50</span>
+<div class="relative flex-1 flex items-center">
+<input class="w-full h-1.5 bg-surface-variant rounded-lg appearance-none cursor-ew-resize accent-primary-container focus:outline-none" id="dpi-range-scrubber" max="6400" min="100" step="50" type="range" value="1600"/>
+</div>
+<span class="font-label-sm text-label-sm text-outline">6400</span>
+</div>
+</div>
+<!-- Lower Configuration Grid: Polling Rate & Core Sensor Properties -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<!-- Polling Rate Card (7 Cols) -->
+<div class="lg:col-span-7 bg-surface-container-low/60 rounded-xl p-space-lg border border-surface-variant/30 backdrop-blur-md flex flex-col justify-between space-y-space-md">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[17px] text-secondary">sync_alt</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Velocidad de Respuesta</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Frecuencia de muestreo USB y enlace inalámbrico nórdico 2.4GHz.</p>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-container/10 border border-primary-container/20 text-primary-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
+          1000 Hz Activo
+        </span>
+</div>
+<!-- Segmented Pill Buttons -->
+<div class="grid grid-cols-4 gap-space-sm bg-surface-container-lowest/80 p-1.5 rounded-lg border border-surface-variant/20">
+<button class="polling-pill flex flex-col items-center justify-center py-2.5 rounded transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container" data-rate="125" type="button">
+<span class="font-label-md text-label-md font-semibold">125 Hz</span>
+<span class="font-label-sm text-[9px] opacity-70">8.0 ms</span>
+</button>
+<button class="polling-pill flex flex-col items-center justify-center py-2.5 rounded transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container" data-rate="250" type="button">
+<span class="font-label-md text-label-md font-semibold">250 Hz</span>
+<span class="font-label-sm text-[9px] opacity-70">4.0 ms</span>
+</button>
+<button class="polling-pill flex flex-col items-center justify-center py-2.5 rounded transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container" data-rate="500" type="button">
+<span class="font-label-md text-label-md font-semibold">500 Hz</span>
+<span class="font-label-sm text-[9px] opacity-70">2.0 ms</span>
+</button>
+<button class="polling-pill active flex flex-col items-center justify-center py-2.5 rounded bg-primary-container text-on-primary-container shadow-md transition-all font-semibold" data-rate="1000" type="button">
+<span class="font-label-md text-label-md font-bold">1000 Hz</span>
+<span class="font-label-sm text-[9px] font-medium opacity-90">1.0 ms</span>
+</button>
+</div>
+<div class="flex items-center justify-between text-outline text-label-sm font-label-sm pt-1 border-t border-surface-variant/20">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary-container">verified</span>
+          Recomendado para juegos competitivos (eSports)
+        </span>
+<span>Consumo óptimo: ~65h</span>
+</div>
+</div>
+<!-- Advanced Hardware Toggles (5 Cols) -->
+<div class="lg:col-span-5 bg-surface-container-low/60 rounded-xl p-space-lg border border-surface-variant/30 backdrop-blur-md flex flex-col justify-between space-y-space-md">
+<!-- LOD Section -->
+<div>
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[17px] text-secondary">vertical_align_top</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Distancia de Elevación (LOD)</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary-fixed-dim">PixArt Flagship</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3">Distancia de corte del sensor al levantar el ratón de la alfombrilla.</p>
+<div class="grid grid-cols-2 gap-2 bg-surface-container-lowest/80 p-1 rounded-lg border border-surface-variant/20">
+<button class="lod-btn active py-2 rounded text-center font-label-md text-label-md transition-all bg-surface-container-high text-primary-container font-semibold border border-primary-container/30" id="lod-low" type="button">
+            Baja (1 mm)
+          </button>
+<button class="lod-btn py-2 rounded text-center font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface" id="lod-high" type="button">
+            Alta (2 mm)
+          </button>
+</div>
+</div>
+<!-- Motion Sync & Debounce Switches -->
+<div class="pt-2 border-t border-surface-variant/20 space-y-3">
+<!-- Toggle: Motion Sync -->
+<div class="flex items-center justify-between cursor-pointer group" id="motion-sync-row">
+<div>
+<div class="font-headline-sm text-body-lg font-medium text-on-surface group-hover:text-primary-container transition-colors">Motion Sync</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Sincroniza lecturas con los paquetes USB para máxima consistencia.</div>
+</div>
+<button aria-checked="true" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out bg-primary-container" id="motion-sync-toggle" role="switch" type="button">
+<span class="translate-x-4 pointer-events-none inline-block h-4 w-4 transform rounded-full bg-surface-container-lowest shadow ring-0 transition duration-200 ease-in-out" id="motion-sync-knob"></span>
+</button>
+</div>
+<!-- Toggle: Ripple Control / Angle Snapping -->
+<div class="flex items-center justify-between cursor-pointer group" id="ripple-row">
+<div>
+<div class="font-headline-sm text-body-lg font-medium text-on-surface group-hover:text-primary-container transition-colors">Fijación de Ángulo</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Predicción algorítmica de trazo lineal.</div>
+</div>
+<button aria-checked="false" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out bg-surface-variant" id="ripple-toggle" role="switch" type="button">
+<span class="translate-x-0 pointer-events-none inline-block h-4 w-4 transform rounded-full bg-on-surface-variant shadow ring-0 transition duration-200 ease-in-out" id="ripple-knob"></span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Realtime Telemetry HUD Footnote -->
+<div class="flex flex-col sm:flex-row items-center justify-between text-outline font-label-sm text-label-sm px-space-xs pt-space-xs gap-space-xs">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>MCU: Nordic 52840</span>
+<span class="text-surface-variant">•</span>
+<span>Memoria Integrada: Perfil 1 cargado</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span>Firmware Dongle: 1.0.8</span>
+<span>Latencia estimada de clic: ~0.45 ms</span>
+</div>
+</div>
+</div>
+<script>
+  // Interactive functionality for DPI Selection, Polling Rate, and Hardware Toggles
+  (function initPerformanceUI() {
+    const activeDpiNumber = document.getElementById('active-dpi-number');
+    const dpiScrubber = document.getElementById('dpi-range-scrubber');
+    const sliderProgress = document.getElementById('slider-progress');
+    const nodes = document.querySelectorAll('.dpi-node');
+    const quickChips = document.querySelectorAll('.quick-chip');
+    const pollingPills = document.querySelectorAll('.polling-pill');
+    const lodLow = document.getElementById('lod-low');
+    const lodHigh = document.getElementById('lod-high');
+
+    // Motion Sync Toggle logic
+    const msToggle = document.getElementById('motion-sync-toggle');
+    const msKnob = document.getElementById('motion-sync-knob');
+    let msEnabled = true;
+
+    msToggle.addEventListener('click', () => {
+      msEnabled = !msEnabled;
+      if (msEnabled) {
+        msToggle.classList.remove('bg-surface-variant');
+        msToggle.classList.add('bg-primary-container');
+        msKnob.classList.remove('translate-x-0', 'bg-on-surface-variant');
+        msKnob.classList.add('translate-x-4', 'bg-surface-container-lowest');
+      } else {
+        msToggle.classList.remove('bg-primary-container');
+        msToggle.classList.add('bg-surface-variant');
+        msKnob.classList.remove('translate-x-4', 'bg-surface-container-lowest');
+        msKnob.classList.add('translate-x-0', 'bg-on-surface-variant');
+      }
+    });
+
+    // Angle Snapping Toggle logic
+    const ripToggle = document.getElementById('ripple-toggle');
+    const ripKnob = document.getElementById('ripple-knob');
+    let ripEnabled = false;
+
+    ripToggle.addEventListener('click', () => {
+      ripEnabled = !ripEnabled;
+      if (ripEnabled) {
+        ripToggle.classList.remove('bg-surface-variant');
+        ripToggle.classList.add('bg-primary-container');
+        ripKnob.classList.remove('translate-x-0', 'bg-on-surface-variant');
+        ripKnob.classList.add('translate-x-4', 'bg-surface-container-lowest');
+      } else {
+        ripToggle.classList.remove('bg-primary-container');
+        ripToggle.classList.add('bg-surface-variant');
+        ripKnob.classList.remove('translate-x-4', 'bg-surface-container-lowest');
+        ripKnob.classList.add('translate-x-0', 'bg-on-surface-variant');
+      }
+    });
+
+    // Update Stage UI
+    function setDPIValue(val, targetNode = null) {
+      val = Math.round(val / 50) * 50;
+      activeDpiNumber.textContent = val;
+      dpiScrubber.value = val;
+
+      // Update progress bar percentage (100 - 6400)
+      const pct = Math.min(Math.max(((val - 100) / (6400 - 100)) * 100, 5), 100);
+      sliderProgress.style.width = pct + '%';
+
+      // Highlight corresponding chip
+      quickChips.forEach(chip => {
+        if (parseInt(chip.getAttribute('data-quick-dpi')) === val) {
+          chip.className = 'quick-chip px-2.5 py-1 rounded bg-primary-container/20 text-primary-container font-label-sm text-label-sm transition-all border border-primary-container/40';
+        } else {
+          chip.className = 'quick-chip px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-all border border-surface-variant/20';
+        }
+      });
+
+      // Update nodes visual if target node or match
+      nodes.forEach(n => {
+        const nodeDpi = parseInt(n.getAttribute('data-dpi'));
+        const isMatched = targetNode ? (n === targetNode) : (nodeDpi === val);
+        
+        // Remove existing badge
+        const badge = n.querySelector('.shadow-lg');
+        if (badge) badge.remove();
+
+        const circle = n.querySelector('.rounded-full.border-2');
+        const textLabel = n.querySelector('.font-label-sm.mb-3, .font-label-md.mb-3');
+        const footerLabel = n.querySelector('.mt-2.5');
+
+        if (isMatched) {
+          const newBadge = document.createElement('div');
+          newBadge.className = 'absolute -top-7 px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm font-semibold tracking-wide shadow-lg';
+          newBadge.textContent = 'ACTIVO';
+          n.prepend(newBadge);
+
+          if (circle) {
+            circle.className = 'w-7 h-7 -my-0.5 rounded-full bg-surface-container-lowest flex items-center justify-center border-2 border-primary-container shadow-[0_0_12px_rgba(0,245,160,0.45)] transition-all transform scale-110';
+          }
+          if (textLabel) {
+            textLabel.className = 'font-label-md text-label-md text-primary-container font-bold mb-3';
+          }
+          if (footerLabel) {
+            footerLabel.className = 'font-label-sm text-[9px] uppercase tracking-wider text-primary-container font-semibold mt-2.5';
+          }
+        } else {
+          if (circle) {
+            circle.className = 'w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-surface-variant group-hover:border-on-surface transition-all';
+          }
+          if (textLabel) {
+            textLabel.className = 'font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface mb-3 transition-colors';
+          }
+          if (footerLabel) {
+            footerLabel.className = 'font-label-sm text-[9px] uppercase tracking-wider text-outline mt-2.5';
+          }
+        }
+      });
+    }
+
+    // Node Click Events
+    nodes.forEach(node => {
+      node.addEventListener('click', () => {
+        const dpi = parseInt(node.getAttribute('data-dpi'));
+        setDPIValue(dpi, node);
+      });
+    });
+
+    // Chip Click Events
+    quickChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const dpi = parseInt(chip.getAttribute('data-quick-dpi'));
+        setDPIValue(dpi);
+      });
+    });
+
+    // Slider scrubbing
+    dpiScrubber.addEventListener('input', (e) => {
+      setDPIValue(e.target.value);
+    });
+
+    // Polling rate pill switcher
+    pollingPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pollingPills.forEach(p => {
+          p.className = 'polling-pill flex flex-col items-center justify-center py-2.5 rounded transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container';
+        });
+        pill.className = 'polling-pill active flex flex-col items-center justify-center py-2.5 rounded bg-primary-container text-on-primary-container shadow-md transition-all font-semibold';
+      });
+    });
+
+    // LOD Selection
+    lodLow.addEventListener('click', () => {
+      lodLow.className = 'lod-btn active py-2 rounded text-center font-label-md text-label-md transition-all bg-surface-container-high text-primary-container font-semibold border border-primary-container/30';
+      lodHigh.className = 'lod-btn py-2 rounded text-center font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface';
+    });
+
+    lodHigh.addEventListener('click', () => {
+      lodHigh.className = 'lod-btn active py-2 rounded text-center font-label-md text-label-md transition-all bg-surface-container-high text-primary-container font-semibold border border-primary-container/30';
+      lodLow.className = 'lod-btn py-2 rounded text-center font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface';
+    });
+
+    // Reset Defaults
+    const resetBtn = document.getElementById('reset-defaults-btn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        setDPIValue(1600);
+      });
+    }
+  })();
+</script></main></div></body></html>

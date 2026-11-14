@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"outline":"#849588","on-secondary":"#003543","tertiary":"#fff0f0","secondary-fixed-dim":"#47d6ff","on-surface":"#dfe2ee","surface-variant":"#31353e","secondary-container":"#00d2ff","inverse-on-surface":"#2c3039","on-tertiary-fixed-variant":"#910030","error":"#ffb4ab","tertiary-fixed-dim":"#ffb2ba","on-tertiary":"#670020","on-tertiary-container":"#bb0041","surface-dim":"#0f131c","on-error-container":"#ffdad6","secondary":"#a5e7ff","on-secondary-fixed-variant":"#004e60","inverse-surface":"#dfe2ee","on-primary-container":"#006b43","on-primary-fixed-variant":"#005232","surface":"#0f131c","on-primary-fixed":"#002111","surface-container-lowest":"#0a0e16","on-secondary-container":"#00566a","tertiary-fixed":"#ffd9dc","background":"#0f131c","surface-container":"#1c2028","on-error":"#690005","on-background":"#dfe2ee","inverse-primary":"#006c44","primary":"#cdffde","outline-variant":"#3b4a40","primary-fixed-dim":"#00e293","on-tertiary-fixed":"#400011","surface-container-highest":"#31353e","primary-container":"#00f5a0","surface-bright":"#353942","on-surface-variant":"#b9cbbd","on-secondary-fixed":"#001f28","primary-fixed":"#50ffaf","surface-container-low":"#181c24","tertiary-container":"#ffcace","error-container":"#93000a","secondary-fixed":"#b6ebff","surface-container-high":"#262a33","surface-tint":"#00e293","on-primary":"#003921"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-xl":"2rem","space-md":"0.75rem","gutter":"0.75rem","margin":"1rem","space-xs":"0.25rem","space-sm":"0.5rem","space-lg":"1.25rem"},"fontFamily":{"headline-xl":["Geist"],"label-lg":["JetBrains Mono"],"headline-sm":["Geist"],"headline-md":["Geist"],"headline-lg":["Geist"],"body-lg":["Geist"],"label-sm":["JetBrains Mono"],"body-md":["Geist"],"label-md":["JetBrains Mono"],"body-sm":["Geist"]},"fontSize":{"headline-xl":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-lg":["13px",{"lineHeight":"18px","letterSpacing":"0.02em","fontWeight":"500"}],"headline-sm":["15px",{"lineHeight":"22px","letterSpacing":"0","fontWeight":"500"}],"headline-md":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-lg":["15px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"400"}],"label-sm":["9px",{"lineHeight":"12px","letterSpacing":"0.08em","fontWeight":"600"}],"body-md":["13px",{"lineHeight":"20px","letterSpacing":"0","fontWeight":"400"}],"label-md":["11px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"500"}],"body-sm":["11px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"400"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface select-none antialiased"><header class="fixed top-0 left-0 right-0 h-14 z-50 bg-surface-container-lowest/90 backdrop-blur-md px-space-md flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm pl-space-xs"><span class="material-symbols-outlined text-primary-container text-[20px]">hexagon</span><span class="font-headline-sm text-headline-sm tracking-wider uppercase text-on-surface font-semibold">HEX SUITE</span></div><div class="h-4 w-[1px] bg-surface-variant"></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded cursor-pointer hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-secondary text-[16px]">mouse</span><span class="font-label-md text-label-md text-on-surface">AJ139 V2</span><div class="flex items-center gap-1 ml-space-xs px-1.5 py-0.5 rounded-full bg-surface-container-highest"><span class="material-symbols-outlined text-primary-container text-[12px]">battery_charging_full</span><span class="font-label-sm text-label-sm text-primary">81%</span></div><span class="material-symbols-outlined text-on-surface-variant text-[14px]">expand_more</span></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded cursor-pointer hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-on-surface-variant text-[14px]">tune</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Perfil:</span><span class="font-label-md text-label-md text-on-surface">Predeterminado</span><span class="material-symbols-outlined text-on-surface-variant text-[14px]">unfold_more</span></div></div><div class="flex items-center gap-space-md"><button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors" title="Ajustes Generales" type="button"><span class="material-symbols-outlined text-[18px]">settings</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="h-4 w-[1px] bg-surface-variant ml-space-xs"></div><div class="flex items-center gap-1 text-on-surface-variant"><button class="w-7 h-7 flex items-center justify-center hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" title="Minimizar" type="button"><span class="material-symbols-outlined text-[14px]">minimize</span></button><button class="w-7 h-7 flex items-center justify-center hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" title="Maximizar" type="button"><span class="material-symbols-outlined text-[14px]">check_box_outline_blank</span></button><button class="w-7 h-7 flex items-center justify-center hover:bg-error-container hover:text-error rounded transition-colors" title="Cerrar" type="button"><span class="material-symbols-outlined text-[14px]">close</span></button></div></div></header><aside class="fixed left-0 top-14 bottom-0 w-56 bg-surface-container-lowest/80 backdrop-blur-md z-40 flex flex-col justify-between py-space-md px-space-sm shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-space-xs"><div class="px-space-sm pb-space-xs"><span class="font-label-sm text-label-sm uppercase text-outline">Dispositivo Activo</span></div><nav class="flex flex-col gap-1" data-active-classes="bg-surface-container-high text-primary-container font-semibold"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="rendimiento" href="#"><span class="material-symbols-outlined text-[18px]">speed</span><span class="font-body-md text-body-md">Rendimiento</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="botones" href="#"><span class="material-symbols-outlined text-[18px]">ads_click</span><span class="font-body-md text-body-md">Botones</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="iluminacion" href="#"><span class="material-symbols-outlined text-[18px]">flare</span><span class="font-body-md text-body-md">Iluminación</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2 rounded transition-all bg-surface-container-high text-primary-container font-semibold" data-path="ajustes" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">Ajustes</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="perfiles" href="#"><span class="material-symbols-outlined text-[18px]">folder_shared</span><span class="font-body-md text-body-md">Perfiles</span></a></nav></div><div class="px-space-sm pt-space-sm flex items-center justify-between"><div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></div><span class="font-label-sm text-label-sm text-on-surface-variant">2.4G PAW3395</span></div><span class="font-label-sm text-label-sm text-outline px-1.5 py-0.5 rounded bg-surface-container-low">v2.2</span></div></aside><div class="pl-56"><main class="w-full pt-14 px-space-lg pb-space-xl bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="flex flex-col gap-space-lg w-full max-w-5xl mx-auto">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container shadow-md">
+<span class="material-symbols-outlined text-[22px]">tune</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-md text-headline-md text-on-surface">Ajustes del Dispositivo</h1>
+<span class="font-label-sm text-label-sm uppercase px-2 py-0.5 rounded-full bg-surface-container-highest text-primary">AJ139 V2 MC</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Calibración energética, firmware y latencias del microcontrolador PAW3395.</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface transition-all text-label-md font-label-md" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary-container">file_download</span>
+<span>Respaldar Perfil</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container hover:shadow-[0_0_16px_rgba(0,245,160,0.4)] text-on-primary font-semibold transition-all text-label-md font-label-md active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Aplicar Cambios</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<section class="bg-surface-container/70 backdrop-blur-md rounded-xl p-space-lg shadow-xl relative overflow-hidden">
+<div class="absolute -top-16 -right-16 w-48 h-48 bg-primary-container/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[20px]">bolt</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-wide">Energía y Batería</h2>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary tracking-wider uppercase">En reposo (Óptimo)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-center bg-surface-container-low rounded-lg p-space-md mb-space-md">
+<div class="md:col-span-5 flex items-center gap-space-md">
+<div class="relative w-16 h-16 flex items-center justify-center shrink-0">
+<svg class="w-full h-full -rotate-90 transform" viewbox="0 0 48 48">
+<circle class="text-surface-variant" cx="24" cy="24" fill="none" r="19" stroke="currentColor" stroke-width="3"></circle>
+<circle class="text-primary-container transition-all duration-700" cx="24" cy="24" fill="none" id="battery-ring" r="19" stroke="currentColor" stroke-dasharray="119.38" stroke-dashoffset="22.68" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-label-md text-label-md text-on-surface font-bold">81%</span>
+<span class="font-label-sm text-label-sm text-outline-variant scale-90">Li-Ion</span>
+</div>
+</div>
+<div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Autonomía estimada</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">~46 Horas</span>
+<span class="font-label-sm text-label-sm text-primary-container block">Tasa de sondeo: 1000Hz</span>
+</div>
+</div>
+<div class="md:col-span-7 flex flex-col gap-1.5 pl-0 md:pl-space-md">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+<span>Capacidad Nominal: 300mAh</span>
+<span class="text-primary">3.7V Nominal</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden p-0.5">
+<div class="bg-gradient-to-r from-secondary-container to-primary-container h-full rounded-full transition-all duration-500" style="width: 81%;"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm font-label-sm text-outline">
+<span>Corte min: 15%</span>
+<span>Carga rápida USB-C lista</span>
+</div>
+</div>
+</div>
+<div class="space-y-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-sm">
+<div>
+<label class="font-body-md text-body-md text-on-surface font-medium block" for="sleep-select">Modo de suspensión tras inactividad</label>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Tiempo de reposo antes del apagado selectivo de componentes ópticos.</span>
+</div>
+<div class="relative shrink-0">
+<select class="bg-surface-container-highest hover:bg-surface-bright text-on-surface font-label-md text-label-md px-3 py-2 pr-8 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary-container transition-colors" id="sleep-select">
+<option value="1">1 minuto</option>
+<option value="5">5 minutos</option>
+<option selected="" value="10">10 minutos (Recomendado)</option>
+<option value="15">15 minutos</option>
+<option value="0">Nunca suspender</option>
+</select>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex items-center justify-between gap-space-sm pt-space-xs">
+<div>
+<span class="font-body-md text-body-md text-on-surface font-medium block">Reactivar al mover el mouse</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Si se desactiva, es necesario presionar un botón físico para reactivar el sensor.</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" id="wake-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-surface peer-checked:bg-primary-container after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:bg-surface-container-lowest"></div>
+</label>
+</div>
+</div>
+</section>
+<section class="bg-surface-container/70 backdrop-blur-md rounded-xl p-space-lg shadow-xl relative overflow-hidden">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">memory</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-wide">Comportamiento del Hardware</h2>
+</div>
+<span class="font-label-sm text-label-sm uppercase px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant">Huano Blue Shell 80M</span>
+</div>
+<div class="space-y-space-lg">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-sm">
+<div>
+<span class="font-body-md text-body-md text-on-surface font-medium block">Dirección de la rueda de desplazamiento</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Invierte el sentido del scroll óptico estilo natural o tradicional.</span>
+</div>
+<div class="inline-flex p-1 bg-surface-container-lowest rounded-lg shrink-0" id="scroll-direction-selector">
+<button class="scroll-dir-btn px-4 py-1.5 rounded text-label-md font-label-md bg-primary-container text-on-primary font-semibold shadow-sm transition-all" data-val="normal" type="button">Normal</button>
+<button class="scroll-dir-btn px-4 py-1.5 rounded text-label-md font-label-md text-on-surface-variant hover:text-on-surface transition-all" data-val="inverted" type="button">Invertida</button>
+</div>
+</div>
+<div class="flex flex-col gap-space-sm bg-surface-container-low p-space-md rounded-lg">
+<div class="flex items-center justify-between">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md text-on-surface font-medium">Tiempo de respuesta de clic (Debounce)</span>
+<span class="material-symbols-outlined text-[15px] text-outline cursor-help" title="Filtro anti-rebote eléctrico para evitar clics fantasma.">info</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Menor tiempo = respuesta instantánea en clics competitivos.</span>
+</div>
+<div class="flex items-baseline gap-1 px-3 py-1 rounded bg-surface-container-highest text-primary-container font-label-lg text-label-lg font-bold">
+<span id="debounce-val">4</span>
+<span class="text-label-sm font-label-sm text-outline">ms</span>
+</div>
+</div>
+<div class="pt-2">
+<input class="w-full h-1.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary-container focus:outline-none" id="debounce-range" max="8" min="1" step="1" type="range" value="4"/>
+<div class="flex justify-between items-center text-label-sm font-label-sm text-outline mt-1.5 px-0.5">
+<span class="text-primary-container">1 ms (Esports)</span>
+<span>2 ms</span>
+<span class="text-on-surface font-semibold">4 ms (Predet.)</span>
+<span>6 ms</span>
+<span>8 ms (Seguro)</span>
+</div>
+</div>
+<div class="hidden mt-2 p-2 rounded bg-surface-container-highest text-secondary text-body-sm font-body-sm flex items-center gap-2" id="debounce-alert">
+<span class="material-symbols-outlined text-[16px] text-secondary-container">electric_bolt</span>
+<span>Latencia ultra-baja seleccionada. Clics ultra-rápidos optimizados para shooters competitivos.</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<div>
+<span class="font-body-md text-body-md text-on-surface font-medium block">Modo de alta velocidad (High Performance MCU)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Mantiene el microcontrolador activo a 64MHz sin saltos dinámicos de reloj.</span>
+</div>
+<div class="inline-flex p-1 bg-surface-container-lowest rounded-lg shrink-0" id="hpc-selector">
+<button class="hpc-btn px-3 py-1.5 rounded text-label-md font-label-md text-on-surface-variant hover:text-on-surface transition-all" data-val="off" type="button">Desactivado</button>
+<button class="hpc-btn px-3 py-1.5 rounded text-label-md font-label-md bg-secondary-container text-on-secondary font-semibold shadow-sm transition-all" data-val="on" type="button">Activado</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="lg:col-span-5 flex flex-col gap-space-lg">
+<section class="bg-surface-container/70 backdrop-blur-md rounded-xl p-space-lg shadow-xl relative overflow-hidden flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[20px]">developer_board</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-wide">Dispositivo y Firmware</h2>
+</div>
+<span class="flex items-center gap-1 font-label-sm text-label-sm text-primary bg-surface-container-high px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                Original
+              </span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-space-md mb-space-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between pb-2">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Modelo de Producto</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold tracking-wide">AJAZZ AJ139 V2 MC</span>
+</div>
+<div class="flex items-center justify-between pb-2">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Enlace RF Activo</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-secondary">sensors</span>
+<span class="font-label-md text-label-md text-on-surface">2.4GHz Dongle (1000Hz)</span>
+</div>
+</div>
+<div class="flex items-center justify-between pb-2">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sensor Óptico</span>
+<span class="font-label-md text-label-md text-on-surface">PixArt PAW3395 (26,000 DPI)</span>
+</div>
+<div class="flex items-center justify-between pb-2">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Firmware del Mouse</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md text-primary font-bold">v2.2.0</span>
+<span class="font-label-sm text-label-sm text-outline">(Actualizado)</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Firmware del Receptor</span>
+<span class="font-label-md text-label-md text-on-surface">v1.0.8</span>
+</div>
+</div>
+<div class="p-space-md bg-surface-container-lowest rounded-lg mb-space-md flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[18px]">system_update</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface font-semibold block">Buscar Actualizaciones</span>
+<span class="font-body-sm text-body-sm text-outline block">Última comprobación: Hoy 14:32</span>
+</div>
+</div>
+<button class="px-space-sm py-1.5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface text-label-sm font-label-sm transition-colors" type="button">
+                Comprobar
+              </button>
+</div>
+</div>
+<div class="pt-space-sm">
+<button class="w-full flex items-center justify-center gap-2 py-2.5 px-space-md rounded-lg bg-surface-container-low hover:bg-error-container/20 text-on-surface-variant hover:text-error transition-all text-body-sm font-body-sm" id="btn-reset-factory" type="button">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span>
+<span>Restaurar Valores de Fábrica</span>
+</button>
+</div>
+</section>
+<section class="bg-surface-container/70 backdrop-blur-md rounded-xl p-space-lg shadow-xl relative overflow-hidden">
+<div class="flex items-center gap-space-sm mb-space-sm">
+<span class="material-symbols-outlined text-outline text-[18px]">shield</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Respaldo Automático Local</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+            Al conectar el dispositivo, la suite sincroniza una copia segura de su configuración física y asignaciones.
+          </p>
+<div class="flex items-center gap-2 p-2 bg-surface-container-lowest rounded-md text-outline font-label-sm text-label-sm overflow-hidden">
+<span class="material-symbols-outlined text-[14px] shrink-0 text-primary-container">terminal</span>
+<span class="truncate">AppData/Roaming/AJAZZ_AJ139/backup-2026.json</span>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const range = document.getElementById('debounce-range');
+    const display = document.getElementById('debounce-val');
+    const alertBox = document.getElementById('debounce-alert');
+
+    if (range && display) {
+      range.addEventListener('input', (e) => {
+        const val = e.target.value;
+        display.textContent = val;
+        if (parseInt(val, 10) <= 2) {
+          alertBox.classList.remove('hidden');
+        } else {
+          alertBox.classList.add('hidden');
+        }
+      });
+    }
+
+    const scrollBtns = document.querySelectorAll('.scroll-dir-btn');
+    scrollBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        scrollBtns.forEach(b => {
+          b.className = 'scroll-dir-btn px-4 py-1.5 rounded text-label-md font-label-md text-on-surface-variant hover:text-on-surface transition-all';
+        });
+        btn.className = 'scroll-dir-btn px-4 py-1.5 rounded text-label-md font-label-md bg-primary-container text-on-primary font-semibold shadow-sm transition-all';
+      });
+    });
+
+    const hpcBtns = document.querySelectorAll('.hpc-btn');
+    hpcBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        hpcBtns.forEach(b => {
+          b.className = 'hpc-btn px-3 py-1.5 rounded text-label-md font-label-md text-on-surface-variant hover:text-on-surface transition-all';
+        });
+        btn.className = 'hpc-btn px-3 py-1.5 rounded text-label-md font-label-md bg-secondary-container text-on-secondary font-semibold shadow-sm transition-all';
+      });
+    });
+
+    const resetBtn = document.getElementById('btn-reset-factory');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (confirm('¿Deseas restaurar todos los ajustes del mouse AJ139 V2 a sus valores predeterminados de fábrica?')) {
+          if (range) {
+            range.value = 4;
+            display.textContent = '4';
+            alertBox.classList.add('hidden');
+          }
+          const sleepSel = document.getElementById('sleep-select');
+          if (sleepSel) sleepSel.value = '10';
+          const wakeToggle = document.getElementById('wake-toggle');
+          if (wakeToggle) wakeToggle.checked = true;
+        }
+      });
+    }
+  })();
+</script></main></div></body></html>

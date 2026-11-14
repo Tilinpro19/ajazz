@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"outline":"#849588","on-secondary":"#003543","tertiary":"#fff0f0","secondary-fixed-dim":"#47d6ff","on-surface":"#dfe2ee","surface-variant":"#31353e","secondary-container":"#00d2ff","inverse-on-surface":"#2c3039","on-tertiary-fixed-variant":"#910030","error":"#ffb4ab","tertiary-fixed-dim":"#ffb2ba","on-tertiary":"#670020","on-tertiary-container":"#bb0041","surface-dim":"#0f131c","on-error-container":"#ffdad6","secondary":"#a5e7ff","on-secondary-fixed-variant":"#004e60","inverse-surface":"#dfe2ee","on-primary-container":"#006b43","on-primary-fixed-variant":"#005232","surface":"#0f131c","on-primary-fixed":"#002111","surface-container-lowest":"#0a0e16","on-secondary-container":"#00566a","tertiary-fixed":"#ffd9dc","background":"#0f131c","surface-container":"#1c2028","on-error":"#690005","on-background":"#dfe2ee","inverse-primary":"#006c44","primary":"#cdffde","outline-variant":"#3b4a40","primary-fixed-dim":"#00e293","on-tertiary-fixed":"#400011","surface-container-highest":"#31353e","primary-container":"#00f5a0","surface-bright":"#353942","on-surface-variant":"#b9cbbd","on-secondary-fixed":"#001f28","primary-fixed":"#50ffaf","surface-container-low":"#181c24","tertiary-container":"#ffcace","error-container":"#93000a","secondary-fixed":"#b6ebff","surface-container-high":"#262a33","surface-tint":"#00e293","on-primary":"#003921"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-xl":"2rem","space-md":"0.75rem","gutter":"0.75rem","margin":"1rem","space-xs":"0.25rem","space-sm":"0.5rem","space-lg":"1.25rem"},"fontFamily":{"headline-xl":["Geist"],"label-lg":["JetBrains Mono"],"headline-sm":["Geist"],"headline-md":["Geist"],"headline-lg":["Geist"],"body-lg":["Geist"],"label-sm":["JetBrains Mono"],"body-md":["Geist"],"label-md":["JetBrains Mono"],"body-sm":["Geist"]},"fontSize":{"headline-xl":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-lg":["13px",{"lineHeight":"18px","letterSpacing":"0.02em","fontWeight":"500"}],"headline-sm":["15px",{"lineHeight":"22px","letterSpacing":"0","fontWeight":"500"}],"headline-md":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-lg":["15px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"400"}],"label-sm":["9px",{"lineHeight":"12px","letterSpacing":"0.08em","fontWeight":"600"}],"body-md":["13px",{"lineHeight":"20px","letterSpacing":"0","fontWeight":"400"}],"label-md":["11px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"500"}],"body-sm":["11px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"400"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface select-none antialiased"><header class="fixed top-0 left-0 right-0 h-14 z-50 bg-surface-container-lowest/90 backdrop-blur-md px-space-md flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm pl-space-xs"><span class="material-symbols-outlined text-primary-container text-[20px]">hexagon</span><span class="font-headline-sm text-headline-sm tracking-wider uppercase text-on-surface font-semibold">HEX SUITE</span></div><div class="h-4 w-[1px] bg-surface-variant"></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded cursor-pointer hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-secondary text-[16px]">mouse</span><span class="font-label-md text-label-md text-on-surface">AJ139 V2</span><div class="flex items-center gap-1 ml-space-xs px-1.5 py-0.5 rounded-full bg-surface-container-highest"><span class="material-symbols-outlined text-primary-container text-[12px]">battery_charging_full</span><span class="font-label-sm text-label-sm text-primary">81%</span></div><span class="material-symbols-outlined text-on-surface-variant text-[14px]">expand_more</span></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded cursor-pointer hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-on-surface-variant text-[14px]">tune</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Perfil:</span><span class="font-label-md text-label-md text-on-surface">Predeterminado</span><span class="material-symbols-outlined text-on-surface-variant text-[14px]">unfold_more</span></div></div><div class="flex items-center gap-space-md"><button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors" title="Ajustes Generales" type="button"><span class="material-symbols-outlined text-[18px]">settings</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="h-4 w-[1px] bg-surface-variant ml-space-xs"></div><div class="flex items-center gap-1 text-on-surface-variant"><button class="w-7 h-7 flex items-center justify-center hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" title="Minimizar" type="button"><span class="material-symbols-outlined text-[14px]">minimize</span></button><button class="w-7 h-7 flex items-center justify-center hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" title="Maximizar" type="button"><span class="material-symbols-outlined text-[14px]">check_box_outline_blank</span></button><button class="w-7 h-7 flex items-center justify-center hover:bg-error-container hover:text-error rounded transition-colors" title="Cerrar" type="button"><span class="material-symbols-outlined text-[14px]">close</span></button></div></div></header><aside class="fixed left-0 top-14 bottom-0 w-56 bg-surface-container-lowest/80 backdrop-blur-md z-40 flex flex-col justify-between py-space-md px-space-sm shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-space-xs"><div class="px-space-sm pb-space-xs"><span class="font-label-sm text-label-sm uppercase text-outline">Dispositivo Activo</span></div><nav class="flex flex-col gap-1" data-active-classes="bg-surface-container-high text-primary-container font-semibold"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="rendimiento" href="#"><span class="material-symbols-outlined text-[18px]">speed</span><span class="font-body-md text-body-md">Rendimiento</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2 rounded transition-all bg-surface-container-high text-primary-container font-semibold" data-path="botones" href="#"><span class="material-symbols-outlined text-[18px]">ads_click</span><span class="font-body-md text-body-md">Botones</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="iluminacion" href="#"><span class="material-symbols-outlined text-[18px]">flare</span><span class="font-body-md text-body-md">Iluminación</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="ajustes" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">Ajustes</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="perfiles" href="#"><span class="material-symbols-outlined text-[18px]">folder_shared</span><span class="font-body-md text-body-md">Perfiles</span></a></nav></div><div class="px-space-sm pt-space-sm flex items-center justify-between"><div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></div><span class="font-label-sm text-label-sm text-on-surface-variant">2.4G PAW3395</span></div><span class="font-label-sm text-label-sm text-outline px-1.5 py-0.5 rounded bg-surface-container-low">v2.2</span></div></aside><div class="pl-56"><main class="w-full pt-14 px-space-lg pb-space-xl bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Sub-header bar / Context Controls -->
+<div class="flex items-center justify-between pb-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-md text-headline-md text-on-surface">Asignaciones</span>
+<span class="font-label-sm text-label-sm uppercase px-1.5 py-0.5 rounded bg-surface-container-high text-primary tracking-widest font-semibold">AJ139 V2 PRO</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline">Selecciona un botón del diagrama o busca comandos para reasignar</span>
+</div>
+</div>
+<!-- Quick Actions Right -->
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center bg-surface-container-low p-0.5 rounded-lg shadow-sm">
+<button class="px-space-md py-1.5 rounded font-label-md text-label-md bg-surface-container-highest text-primary shadow-sm flex items-center gap-1.5 transition-all" id="view-top">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+<span>Vista Superior</span>
+</button>
+<button class="px-space-md py-1.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5" id="view-side">
+<span class="material-symbols-outlined text-[16px]">flip</span>
+<span>Vista Lateral</span>
+</button>
+</div>
+<button class="flex items-center gap-1.5 px-space-md py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-all text-label-md font-label-md" type="button">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span>
+<span>Restablecer</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-lg py-2 rounded-lg bg-primary-container text-on-primary font-headline-sm text-headline-sm hover:shadow-[0_0_18px_rgba(0,245,160,0.35)] transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Guardar en Perfil</span>
+</button>
+</div>
+</div>
+<!-- Main Hardware Stage: G HUB Bespoke Grid -->
+<div class="grid grid-cols-12 gap-space-md items-start">
+<!-- LEFT PANEL: Command Library & Assignment Explorer (Logitech G HUB Style) -->
+<div class="col-span-12 lg:col-span-4 xl:col-span-3 flex flex-col gap-space-sm bg-surface-container-lowest/80 backdrop-blur-xl p-space-md rounded-xl shadow-lg">
+<!-- Search Input -->
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]">search</span>
+<input class="w-full bg-surface-container-low rounded-lg pl-9 pr-8 py-2 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container transition-all" placeholder="Buscar acciones, teclas o macros..." type="text"/>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 text-outline text-[16px] cursor-pointer hover:text-on-surface">filter_list</span>
+</div>
+<!-- Categories Segmented Pills -->
+<div class="flex items-center gap-1 overflow-x-auto pb-1 pt-1 no-scrollbar text-label-md font-label-md">
+<button class="cat-pill active px-3 py-1.5 rounded-full bg-primary-container text-on-primary font-semibold whitespace-nowrap shadow-sm">
+          Comandos
+        </button>
+<button class="cat-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors">
+          Teclas
+        </button>
+<button class="cat-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors">
+          Acciones
+        </button>
+<button class="cat-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors">
+          Macros
+        </button>
+<button class="cat-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors">
+          Sistema
+        </button>
+</div>
+<!-- Category Description / Active Node Focus -->
+<div class="flex items-center justify-between px-1 pt-2">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Acciones Estándar de Ratón</span>
+<span class="font-label-sm text-label-sm text-secondary">8 Asignables</span>
+</div>
+<!-- Scrollable List of Drag/Click Assignable Commands -->
+<div class="flex flex-col gap-1.5 max-h-[510px] overflow-y-auto pr-1">
+<!-- Command Card -->
+<div class="command-item group flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-grab active:cursor-grabbing transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">touch_app</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Clic Primario</span>
+<span class="font-label-sm text-label-sm text-outline">Botón Izquierdo</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Command Card -->
+<div class="command-item group flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-grab active:cursor-grabbing transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">mouse</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Clic Secundario</span>
+<span class="font-label-sm text-label-sm text-outline">Botón Derecho</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Command Card -->
+<div class="command-item group flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-grab active:cursor-grabbing transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">ads_click</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Clic Medio (Rueda)</span>
+<span class="font-label-sm text-label-sm text-outline">Pulsación central</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Command Card -->
+<div class="command-item group flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-grab active:cursor-grabbing transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-primary group-hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-[16px]">speed</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Ciclo de DPI</span>
+<span class="font-label-sm text-label-sm text-outline">Rotar 5 perfiles</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Command Card -->
+<div class="command-item group flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-grab active:cursor-grabbing transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Navegación: Adelante</span>
+<span class="font-label-sm text-label-sm text-outline">Lateral 1</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Command Card -->
+<div class="command-item group flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-grab active:cursor-grabbing transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Navegación: Atrás</span>
+<span class="font-label-sm text-label-sm text-outline">Lateral 2</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Command Card: Sniper Shift -->
+<div class="command-item group flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-grab active:cursor-grabbing transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-secondary-fixed-dim group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">my_location</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Cambio de Francotirador</span>
+<span class="font-label-sm text-label-sm text-outline">Mantener 400 DPI</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Command Card: Mute Audio -->
+<div class="command-item group flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-grab active:cursor-grabbing transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">volume_off</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Silenciar Audio</span>
+<span class="font-label-sm text-label-sm text-outline">Media global</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+</div>
+<!-- Quick Creation Button -->
+<div class="pt-2">
+<button class="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined text-[16px]">add_circle</span>
+<span>Crear Nueva Macro</span>
+</button>
+</div>
+</div>
+<!-- CENTER & RIGHT: Stage Canvas with Product Render + Callout Pill Wiring -->
+<div class="col-span-12 lg:col-span-8 xl:col-span-9 flex flex-col gap-space-md">
+<!-- Interactive Schematic Area -->
+<div class="relative w-full h-[620px] rounded-xl bg-surface-container-lowest/60 backdrop-blur-md flex items-center justify-center overflow-hidden shadow-xl">
+<!-- Subtle Grid Background -->
+<div class="absolute inset-0 opacity-15 pointer-events-none">
+<svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="32" id="hub-grid" patternunits="userSpaceOnUse" width="32">
+<circle cx="2" cy="2" fill="#849588" r="1"></circle>
+</pattern>
+</defs>
+<rect fill="url(#hub-grid)" height="100%" width="100%"></rect>
+</svg>
+</div>
+<!-- Ambient Glow behind mouse -->
+<div class="absolute w-96 h-96 rounded-full bg-secondary-container/5 blur-3xl pointer-events-none"></div>
+<!-- Vector Connection Lines linking pins to pills (SVG Overlay) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10" preserveaspectratio="none" viewbox="0 0 860 620">
+<!-- Button 1: Left Click (Left Top) -->
+<path d="M 280 135 L 350 135 L 395 190" fill="none" opacity="0.8" stroke="#00f5a0" stroke-dasharray="3 3" stroke-width="1.5"></path>
+<!-- Button 2: Right Click (Right Top) -->
+<path d="M 580 135 L 510 135 L 465 190" fill="none" opacity="0.6" stroke="#849588" stroke-width="1.2"></path>
+<!-- Button 3: Middle Click (Right Middle) -->
+<path d="M 580 230 L 490 230 L 430 200" fill="none" opacity="0.6" stroke="#849588" stroke-width="1.2"></path>
+<!-- Button 6: DPI Switch (Right Bottom) -->
+<path d="M 580 345 L 485 345 L 430 295" fill="none" opacity="0.6" stroke="#849588" stroke-width="1.2"></path>
+<!-- Button 4: Side Front (Left Middle) -->
+<path d="M 280 260 L 340 260 L 375 270" fill="none" opacity="0.6" stroke="#849588" stroke-width="1.2"></path>
+<!-- Button 5: Side Rear (Left Bottom) -->
+<path d="M 280 370 L 340 370 L 372 320" fill="none" opacity="0.6" stroke="#849588" stroke-width="1.2"></path>
+</svg>
+<!-- White Gaming Mouse Render (AJ139 V2 Inspired) -->
+<div class="relative z-0 flex flex-col items-center justify-center select-none">
+<!-- Detailed Vector Silhouette of AJ139 White Ergonomic Gaming Mouse -->
+<div class="relative w-72 h-[480px] flex items-center justify-center">
+<!-- Mouse Chassis Outer Shell -->
+<div class="relative w-64 h-[440px] bg-gradient-to-b from-[#f8fafc] via-[#eceff4] to-[#dfe3eb] rounded-[60px_60px_90px_90px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_2px_4px_rgba(255,255,255,1),inset_0_-8px_16px_rgba(0,0,0,0.15)] flex flex-col items-center overflow-hidden">
+<!-- Left/Right Click Separation Seam -->
+<div class="absolute top-0 w-[2px] h-44 bg-surface-container-high/40"></div>
+<!-- Left Button Cutout Surface -->
+<div class="absolute left-2 top-2 w-[122px] h-44 rounded-tl-[54px] bg-gradient-to-br from-white/90 to-transparent pointer-events-none"></div>
+<!-- Right Button Cutout Surface -->
+<div class="absolute right-2 top-2 w-[122px] h-44 rounded-tr-[54px] bg-gradient-to-bl from-white/90 to-transparent pointer-events-none"></div>
+<!-- Top Front Notch / Cable Insert channel -->
+<div class="w-16 h-4 bg-surface-container-highest rounded-b-md shadow-inner"></div>
+<!-- Scroll Wheel Assembly Cavity -->
+<div class="mt-4 w-11 h-28 bg-[#1a1e28] rounded-full p-1 flex flex-col items-center justify-center shadow-[inset_0_2px_6px_rgba(0,0,0,0.8)] relative">
+<!-- Rubberized Wheel Core -->
+<div class="w-8 h-24 bg-[#2b303c] rounded-full shadow-lg flex flex-col items-center justify-between py-2 border-x border-[#3a4050]">
+<div class="w-5 h-1 bg-surface-variant rounded"></div>
+<div class="w-5 h-1 bg-surface-variant rounded"></div>
+<!-- Optical encoder micro-LED indicator -->
+<div class="w-5 h-1.5 bg-primary-container rounded shadow-[0_0_8px_#00f5a0]"></div>
+<div class="w-5 h-1 bg-surface-variant rounded"></div>
+<div class="w-5 h-1 bg-surface-variant rounded"></div>
+</div>
+</div>
+<!-- DPI Button Well -->
+<div class="mt-4 w-6 h-9 rounded-md bg-[#222733] shadow-[inset_0_1px_3px_rgba(0,0,0,0.7)] flex items-center justify-center">
+<div class="w-4 h-7 rounded bg-[#383e4d] shadow hover:bg-surface-variant cursor-pointer transition-colors"></div>
+</div>
+<!-- Palm Rest Ambient Contours & Minimalist Hex Branding -->
+<div class="mt-14 flex flex-col items-center opacity-40">
+<span class="material-symbols-outlined text-[32px] text-surface-container-highest">hexagon</span>
+<span class="font-label-sm text-label-sm tracking-[0.25em] text-outline mt-1 font-semibold">AJAZZ</span>
+</div>
+<!-- Rear LED Light Strip Glow (Off / Subtle Stealth) -->
+<div class="absolute bottom-4 w-28 h-1 bg-primary/20 rounded-full blur-[1px]"></div>
+</div>
+<!-- Left Side Buttons protruding from chassis -->
+<div class="absolute -left-1 top-44 flex flex-col gap-2">
+<div class="w-2.5 h-12 bg-[#2a2f3d] rounded-l-md shadow-md"></div>
+<div class="w-2.5 h-12 bg-[#2a2f3d] rounded-l-md shadow-md"></div>
+</div>
+<!-- Interactive Anchor Nodes (Hotspots) -->
+<!-- 1. Left Click Node -->
+<div class="absolute top-[182px] left-[78px] z-20 group cursor-pointer">
+<div class="w-4 h-4 rounded-full bg-primary-container/20 flex items-center justify-center animate-pulse">
+<div class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_#00f5a0]"></div>
+</div>
+</div>
+<!-- 2. Right Click Node -->
+<div class="absolute top-[182px] right-[78px] z-20 group cursor-pointer">
+<div class="w-4 h-4 rounded-full bg-surface-variant flex items-center justify-center hover:bg-primary/30 transition-colors">
+<div class="w-2 h-2 rounded-full bg-outline group-hover:bg-primary transition-colors"></div>
+</div>
+</div>
+<!-- 3. Scroll Wheel Node -->
+<div class="absolute top-[192px] left-[138px] z-20 group cursor-pointer">
+<div class="w-4 h-4 rounded-full bg-surface-variant flex items-center justify-center hover:bg-primary/30 transition-colors">
+<div class="w-2 h-2 rounded-full bg-outline group-hover:bg-primary transition-colors"></div>
+</div>
+</div>
+<!-- 4. DPI Button Node -->
+<div class="absolute top-[288px] left-[138px] z-20 group cursor-pointer">
+<div class="w-4 h-4 rounded-full bg-surface-variant flex items-center justify-center hover:bg-primary/30 transition-colors">
+<div class="w-2 h-2 rounded-full bg-outline group-hover:bg-primary transition-colors"></div>
+</div>
+</div>
+<!-- 5. Side Front Node -->
+<div class="absolute top-[262px] left-[22px] z-20 group cursor-pointer">
+<div class="w-4 h-4 rounded-full bg-surface-variant flex items-center justify-center hover:bg-primary/30 transition-colors">
+<div class="w-2 h-2 rounded-full bg-outline group-hover:bg-primary transition-colors"></div>
+</div>
+</div>
+<!-- 6. Side Rear Node -->
+<div class="absolute top-[312px] left-[22px] z-20 group cursor-pointer">
+<div class="w-4 h-4 rounded-full bg-surface-variant flex items-center justify-center hover:bg-primary/30 transition-colors">
+<div class="w-2 h-2 rounded-full bg-outline group-hover:bg-primary transition-colors"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- FLOATING CALLOUT PILLS (Interactive G HUB Configuration Cards) -->
+<!-- 1. Left Primary Button (ACTIVE / SELECTED STATE) -->
+<div class="absolute top-24 left-10 z-20 w-64 bg-surface-container/95 backdrop-blur-md p-space-sm rounded-lg shadow-2xl transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold flex items-center justify-center">1</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Clic Izquierdo</span>
+</div>
+<span class="material-symbols-outlined text-primary-container text-[16px]">lock</span>
+</div>
+<div class="mt-1.5 flex items-center justify-between bg-surface-container-low px-2 py-1 rounded">
+<span class="font-label-md text-label-md text-primary font-semibold">Clic Primario</span>
+<span class="font-label-sm text-label-sm text-outline">Por Defecto</span>
+</div>
+</div>
+<!-- 2. Right Click Button -->
+<div class="absolute top-24 right-10 z-20 w-64 bg-surface-container/90 backdrop-blur-md p-space-sm rounded-lg shadow-md hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm font-bold flex items-center justify-center">2</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Clic Derecho</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px]">edit</span>
+</div>
+<div class="mt-1.5 flex items-center justify-between bg-surface-container-low px-2 py-1 rounded">
+<span class="font-label-md text-label-md text-on-surface">Clic Secundario</span>
+<span class="font-label-sm text-label-sm text-outline">Estándar</span>
+</div>
+</div>
+<!-- 3. Middle Scroll Button -->
+<div class="absolute top-48 right-10 z-20 w-64 bg-surface-container/90 backdrop-blur-md p-space-sm rounded-lg shadow-md hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm font-bold flex items-center justify-center">3</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Botón Rueda</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px]">tune</span>
+</div>
+<div class="mt-1.5 flex items-center justify-between bg-surface-container-low px-2 py-1 rounded">
+<span class="font-label-md text-label-md text-on-surface">Clic Medio</span>
+<span class="font-label-sm text-label-sm text-secondary">Rueda pulsada</span>
+</div>
+</div>
+<!-- 4. DPI Switch Button -->
+<div class="absolute top-72 right-10 z-20 w-64 bg-surface-container/90 backdrop-blur-md p-space-sm rounded-lg shadow-md hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm font-bold flex items-center justify-center">6</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Interruptor DPI</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px]">speed</span>
+</div>
+<div class="mt-1.5 flex items-center justify-between bg-surface-container-low px-2 py-1 rounded">
+<span class="font-label-md text-label-md text-primary font-medium">Ciclo de Sensibilidad</span>
+<span class="font-label-sm text-label-sm text-outline">800/1600/3200</span>
+</div>
+</div>
+<!-- 5. Side Front (Button 5) -->
+<div class="absolute top-56 left-10 z-20 w-64 bg-surface-container/90 backdrop-blur-md p-space-sm rounded-lg shadow-md hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm font-bold flex items-center justify-center">5</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Botón Adelante</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px]">tune</span>
+</div>
+<div class="mt-1.5 flex items-center justify-between bg-surface-container-low px-2 py-1 rounded">
+<span class="font-label-md text-label-md text-on-surface">Avanzar Página</span>
+<span class="font-label-sm text-label-sm text-outline">Navegador</span>
+</div>
+</div>
+<!-- 6. Side Back (Button 4) -->
+<div class="absolute top-80 left-10 z-20 w-64 bg-surface-container/90 backdrop-blur-md p-space-sm rounded-lg shadow-md hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm font-bold flex items-center justify-center">4</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Botón Atrás</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px]">tune</span>
+</div>
+<div class="mt-1.5 flex items-center justify-between bg-surface-container-low px-2 py-1 rounded">
+<span class="font-label-md text-label-md text-on-surface">Retroceder Página</span>
+<span class="font-label-sm text-label-sm text-outline">Navegador</span>
+</div>
+</div>
+<!-- Bottom Mode Badge -->
+<div class="absolute bottom-4 left-6 z-20 flex items-center gap-space-sm bg-surface-container-low/90 backdrop-blur-md px-space-md py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Modo Directo a Memoria Integrada (On-Board)</span>
+</div>
+<!-- Bottom Right Quick Layout Preset -->
+<div class="absolute bottom-4 right-6 z-20 flex items-center gap-2">
+<button class="px-space-md py-1 rounded bg-surface-container-high hover:bg-surface-variant font-label-sm text-label-sm text-on-surface transition-colors">
+            Copia a G-Shift
+          </button>
+</div>
+</div>
+<!-- BOTTOM CONTROL STRIP: Wheel Scroll & Advanced Debounce Telemetry -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Wheel Directional Mapping -->
+<div class="p-space-md bg-surface-container-lowest/80 backdrop-blur-md rounded-xl shadow-md flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">swap_vert</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Desplazamiento</span>
+<span class="font-body-sm text-body-sm text-outline">Rueda Arriba / Abajo</span>
+</div>
+</div>
+<div class="flex items-center gap-1 font-label-sm text-label-sm">
+<span class="px-2 py-1 rounded bg-surface-container text-on-surface">Normal</span>
+</div>
+</div>
+<!-- Optical Switch Debounce Tuning -->
+<div class="p-space-md bg-surface-container-lowest/80 backdrop-blur-md rounded-xl shadow-md flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Tiempo de Rebote</span>
+<span class="font-body-sm text-body-sm text-outline">Anti-doble clic óptico</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 font-label-md text-label-md">
+<span class="px-2 py-1 rounded bg-surface-container-high text-primary font-semibold">2 ms</span>
+</div>
+</div>
+<!-- Sensor Lod / Angle Snapping -->
+<div class="p-space-md bg-surface-container-lowest/80 backdrop-blur-md rounded-xl shadow-md flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-secondary-fixed-dim">
+<span class="material-symbols-outlined text-[20px]">height</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Distancia de Elevación</span>
+<span class="font-body-sm text-body-sm text-outline">PAW3395 Sensor LOD</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 font-label-md text-label-md">
+<span class="px-2 py-1 rounded bg-surface-container text-on-surface">1.0 mm</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple micro-interactions for category filtering and view toggle
+  document.querySelectorAll('.cat-pill').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.cat-pill').forEach(b => {
+        b.classList.remove('bg-primary-container', 'text-on-primary', 'font-semibold');
+        b.classList.add('bg-surface-container', 'text-on-surface-variant');
+      });
+      btn.classList.add('bg-primary-container', 'text-on-primary', 'font-semibold');
+      btn.classList.remove('bg-surface-container', 'text-on-surface-variant');
+    });
+  });
+
+  const topView = document.getElementById('view-top');
+  const sideView = document.getElementById('view-side');
+
+  if(topView && sideView) {
+    topView.addEventListener('click', () => {
+      topView.classList.add('bg-surface-container-highest', 'text-primary');
+      topView.classList.remove('text-on-surface-variant');
+      sideView.classList.remove('bg-surface-container-highest', 'text-primary');
+      sideView.classList.add('text-on-surface-variant');
+    });
+
+    sideView.addEventListener('click', () => {
+      sideView.classList.add('bg-surface-container-highest', 'text-primary');
+      sideView.classList.remove('text-on-surface-variant');
+      topView.classList.remove('bg-surface-container-highest', 'text-primary');
+      topView.classList.add('text-on-surface-variant');
+    });
+  }
+</script></main></div></body></html>
