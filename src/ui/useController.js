@@ -10,7 +10,7 @@ import {
   migrate, activeProfile, updateProfile, addProfile, removeProfile, newProfile, exportProfile,
   importProfile, profileForExecutable, removeMacro as removeMacroFromStore, newMacro, factoryButtons,
 } from "../profiles.js";
-import { api } from "./api.js";
+import { api, tauriHid } from "./api.js";
 
 // #demo: mouse simulado; no se tocan los perfiles ni los respaldos reales.
 const DEMO = location.hash === "#demo";
@@ -117,7 +117,7 @@ export function useController() {
   }, [syncActive, toast]);
 
   useEffect(() => {
-    const hid = DEMO ? new DemoHid() : navigator.hid;
+    const hid = DEMO ? new DemoHid() : tauriHid ?? navigator.hid;
     if (!hid) {
       setConn({ status: "error", error: new Error("WebHID no está disponible en este entorno") });
       return;

@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useController } from "./useController.js";
 import { Icon, Battery, Toasts, ActionButton } from "./components.jsx";
-import { inElectron } from "./api.js";
+import { inElectron, windowControls } from "./api.js";
 import { useIconHover } from "@animateicons/react";
 import {
   Gauge,
@@ -64,7 +64,7 @@ function Header({ ctl }) {
     : "Sincronizando…";
 
   return (
-    <header className="topbar">
+    <header className="topbar" data-tauri-drag-region>
       <div className="topbar-brand-group">
         <div className="brand-logo" title="AJAZZ Control Suite">
           <Icon name="gauge" size={20} />
@@ -219,6 +219,24 @@ export default function App() {
         </main>
       </div>
       <Toasts items={ctl.toasts} />
+      {windowControls && <WindowControls />}
+    </div>
+  );
+}
+
+// Botones de ventana propios (Tauri sin marco).
+function WindowControls() {
+  return (
+    <div className="win-controls">
+      <button aria-label="Minimizar" onClick={windowControls.minimize}>
+        <svg width="10" height="10" viewBox="0 0 10 10"><path d="M0 5h10" stroke="currentColor" /></svg>
+      </button>
+      <button aria-label="Maximizar" onClick={windowControls.toggleMaximize}>
+        <svg width="10" height="10" viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9" fill="none" stroke="currentColor" /></svg>
+      </button>
+      <button aria-label="Cerrar" className="close" onClick={windowControls.close}>
+        <svg width="10" height="10" viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10" stroke="currentColor" /></svg>
+      </button>
     </div>
   );
 }

@@ -15,10 +15,15 @@
     "build": "vite build",
     "start": "vite build && electron .",
     "icon": "node scripts/make-icon.js",
-    "dist": "vite build && electron-builder --win nsis"
+    "dist": "vite build && electron-builder --win nsis",
+    "dev:vite": "vite",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "dist:tauri": "tauri build"
   },
   "devDependencies": {
     "@animateicons/react": "^0.12.1",
+    "@tauri-apps/cli": "^2.12.4",
     "@vitejs/plugin-react": "^4.7.0",
     "electron": "^33.4.11",
     "electron-builder": "^25.1.8",

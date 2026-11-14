@@ -2369,3 +2369,26 @@ input.number.short {
   .sidebar-group-title, .nav span, .telemetry-pill span:not(.telemetry-dot) { display: none; }
   .nav { justify-content: center; padding: 10px; }
 }
+
+/* Controles de ventana (Tauri) */
+.win-controls {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 38px;
+  display: flex;
+  z-index: 100;
+  color: #94a3b8;
+}
+.win-controls button {
+  width: 46px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: default;
+}
+.win-controls button:hover { background: rgba(255, 255, 255, 0.08); }
+.win-controls button.close:hover { background: #e81123; color: #fff; }

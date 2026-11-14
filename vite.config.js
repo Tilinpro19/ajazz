@@ -5,7 +5,8 @@ import react from "@vitejs/plugin-react";
 const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'";
 const csp = {
   name: "csp",
-  apply: "build",
+  // En Tauri la CSP la pone tauri.conf.json (necesita permitir el IPC).
+  apply: (_c, env) => env.command === "build" && !process.env.TAURI_ENV_PLATFORM,
   transformIndexHtml: (html) => html.replace("<head>", `<head>\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`),
 };
 
